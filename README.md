@@ -44,20 +44,6 @@ O EcoSnap tem como objetivo facilitar o reconhecimento de plantas e promover o c
 - **Firebase Storage** (Armazenamento de imagens)  
 - **Firebase Hosting / Functions** (Expansão de backend)  
 
----
-
-## Estrutura do Projeto
-
-
-ecosnap/
-│
-├── lib/ # Código principal do aplicativo Flutter
-├── assets/ # Imagens e recursos visuais
-├── widgets/ # Componentes reutilizáveis
-├── services/ # Integração com API (Plant.id)
-├── models/ # Modelos de dados
-└── README.md
-
 
 ---
 
