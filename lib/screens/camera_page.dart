@@ -80,7 +80,7 @@ class _CameraPageState extends State<CameraPage> {
       Uri.parse('https://plant.id/api/v3/identification'),
       headers: {
         'Content-Type': 'application/json',
-        'Api-Key': '0Unj3uZ9PGXuuNx84L4CqqVKzgozwEtqtRFnKjq0suYo83VP9I',
+        'Api-Key': 'põe alguma aí',
       },
       body: jsonEncode({
         "images": [base64Image],
