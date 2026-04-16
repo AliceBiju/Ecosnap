@@ -1,5 +1,6 @@
+import 'dart:typed_data';
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,37 +17,81 @@ class _CameraPageState extends State<CameraPage> {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
-  File? _image;
+  Uint8List? _imageBytes;
   String? _resultado;
   String? _imagemSimilar;
+
   bool _loading = false;
+  bool _modoEscolhido = false;
+  bool _usarCamera = false;
+  bool _cameraDisponivel = false;
 
   final picker = ImagePicker();
 
-  @override
-  void initState() {
-    super.initState();
-    iniciarCamera();
+  // =========================
+  // ESCOLHA MODO
+  // =========================
+  void escolherModo(bool camera) async {
+    setState(() {
+      _modoEscolhido = true;
+      _usarCamera = camera;
+    });
+
+    if (camera) {
+      await iniciarCamera();
+    } else {
+      await pegarDaGaleria();
+    }
   }
 
+  // =========================
+  // CAMERA
+  // =========================
   Future<void> iniciarCamera() async {
-    cameras = await availableCameras();
+    try {
+      cameras = await availableCameras();
 
-    controller = CameraController(cameras![0], ResolutionPreset.medium);
+      if (!mounted) return;
 
-    await controller!.initialize();
+      if (cameras == null || cameras!.isEmpty) {
+        setState(() => _cameraDisponivel = false);
+        return;
+      }
 
-    if (!mounted) return;
-    setState(() {});
+      controller = CameraController(
+        cameras!.first,
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
+
+      await controller!.initialize();
+
+      if (!mounted) return;
+
+      setState(() => _cameraDisponivel = true);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _cameraDisponivel = false;
+        _usarCamera = false;
+      });
+    }
   }
 
+  // =========================
+  // FOTO CAMERA
+  // =========================
   Future<void> tirarFoto() async {
-    if (!controller!.value.isInitialized) return;
+    if (_loading) return;
+    if (controller == null || !controller!.value.isInitialized) return;
 
     final foto = await controller!.takePicture();
+    final bytes = await foto.readAsBytes();
+
+    if (!mounted) return;
 
     setState(() {
-      _image = File(foto.path);
+      _imageBytes = bytes;
       _resultado = null;
       _imagemSimilar = null;
     });
@@ -54,54 +99,93 @@ class _CameraPageState extends State<CameraPage> {
     await identificarPlanta();
   }
 
+  // =========================
+  // GALERIA (WEB + MOBILE)
+  // =========================
   Future<void> pegarDaGaleria() async {
-    final XFile? foto = await picker.pickImage(source: ImageSource.gallery);
+    if (_loading) return;
 
-    if (foto != null) {
-      setState(() {
-        _image = File(foto.path);
-        _resultado = null;
-        _imagemSimilar = null;
-      });
+    final XFile? foto =
+        await picker.pickImage(source: ImageSource.gallery);
 
-      await identificarPlanta();
-    }
+    if (foto == null) return;
+
+    final bytes = await foto.readAsBytes();
+
+    if (!mounted) return;
+
+    setState(() {
+      _imageBytes = bytes;
+      _resultado = null;
+      _imagemSimilar = null;
+    });
+
+    await identificarPlanta();
   }
 
+  // =========================
+  // API PLANT.ID (CORRIGIDA)
+  // =========================
   Future<void> identificarPlanta() async {
-    if (_image == null) return;
+    if (_imageBytes == null || _loading) return;
 
     setState(() => _loading = true);
 
-    final bytes = await _image!.readAsBytes();
-    final base64Image = base64Encode(bytes);
+    try {
+      final base64Image = base64Encode(_imageBytes!);
 
-    final response = await http.post(
-      Uri.parse('https://plant.id/api/v3/identification'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Key': 'põe alguma aí',
-      },
-      body: jsonEncode({
-        "images": [base64Image],
-        "organs": ["leaf"],
-      }),
-    );
+      final response = await http.post(
+        Uri.parse('https://plant.id/api/v3/identification'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Api-Key': '0Unj3uZ9PGXuuNx84L4CqqVKzgozwEtqtRFnKjq0suYo83VP9I',
+        },
+        body: jsonEncode({
+          "images": ["data:image/jpeg;base64,$base64Image"],
+          "similar_images": true
+        }),
+      );
 
-    if (response.statusCode == 200) {
+      if (!mounted) return;
+
       final data = jsonDecode(response.body);
-      final sugestao = data['result']['classification']['suggestions'][0];
+
+      if (response.statusCode != 200) {
+        setState(() {
+          _resultado = "Erro API: ${data['error'] ?? response.body}";
+        });
+        return;
+      }
+
+      final suggestions =
+          data['result']?['classification']?['suggestions'];
 
       setState(() {
-        _resultado =
-            "🌿 ${sugestao['name']}\nConfiança: ${(sugestao['probability'] * 100).toStringAsFixed(2)}%";
+        if (suggestions == null || suggestions.isEmpty) {
+          _resultado = "Nenhuma planta identificada";
+          _imagemSimilar = null;
+        } else {
+          final s = suggestions[0];
 
-        _imagemSimilar = sugestao['similar_images']?[0]?['url'];
+          _resultado =
+              "🌿 ${s['name']}\n"
+              "Confiança: ${(s['probability'] * 100).toStringAsFixed(2)}%";
+
+          _imagemSimilar =
+              (s['similar_images'] != null &&
+                      s['similar_images'].isNotEmpty)
+                  ? s['similar_images'][0]['url']
+                  : null;
+        }
       });
-    } else {
-      setState(() => _resultado = "Erro ao identificar");
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _resultado = "Erro: $e";
+      });
     }
 
+    if (!mounted) return;
     setState(() => _loading = false);
   }
 
@@ -111,87 +195,119 @@ class _CameraPageState extends State<CameraPage> {
     super.dispose();
   }
 
+  // =========================
+  // UI INICIAL
+  // =========================
   @override
   Widget build(BuildContext context) {
-    if (controller == null || !controller!.value.isInitialized) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    if (!_modoEscolhido) {
+      return Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              const Expanded(
+                child: Center(
+                  child: Text(
+                    "Escolha como enviar a imagem",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => escolherModo(true),
+                      child: const Text("Usar Câmera"),
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () => escolherModo(false),
+                      child: const Text("Escolher da Galeria"),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget cameraWidget;
+
+    if (_usarCamera &&
+        _cameraDisponivel &&
+        controller != null &&
+        controller!.value.isInitialized) {
+      cameraWidget = CameraPreview(controller!);
+    } else {
+      cameraWidget = const Center(
+        child: Text("Câmera não disponível"),
+      );
     }
 
     return Scaffold(
       body: Stack(
         children: [
-          /// 📸 CAMERA AO VIVO
-          CameraPreview(controller!),
+          cameraWidget,
 
-          /// RESULTADO BONITO (OVERLAY)
+          // IMAGEM PREVIEW
+          if (_imageBytes != null)
+            Positioned(
+              top: 20,
+              left: 20,
+              right: 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.memory(
+                  _imageBytes!,
+                  height: 180,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+          // RESULTADO
           if (_resultado != null)
             Positioned(
-              top: 80,
+              top: 220,
               left: 20,
               right: 20,
               child: Container(
                 padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.6),
-                  borderRadius: BorderRadius.circular(15),
-                ),
+                color: Colors.black54,
                 child: Column(
                   children: [
                     Text(
                       _resultado!,
-                      style: const TextStyle(color: Colors.white, fontSize: 16),
-                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.white),
                     ),
-                    const SizedBox(height: 10),
                     if (_imagemSimilar != null)
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(_imagemSimilar!, height: 120),
-                      ),
+                      Image.network(_imagemSimilar!, height: 120),
                   ],
                 ),
               ),
             ),
 
-          /// LOADING
-          if (_loading) const Center(child: CircularProgressIndicator()),
+          // LOADING
+          if (_loading)
+            const Center(child: CircularProgressIndicator()),
 
-          /// BOTÕES (ESTILO CÂMERA)
+          // BOTÃO
           Positioned(
             bottom: 30,
             left: 0,
             right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                /// GALERIA
-                IconButton(
-                  icon: const Icon(Icons.photo, color: Colors.white, size: 35),
-                  onPressed: pegarDaGaleria,
+            child: Center(
+              child: GestureDetector(
+                onTap: _usarCamera ? tirarFoto : pegarDaGaleria,
+                child: const CircleAvatar(
+                  radius: 35,
+                  backgroundColor: Colors.white,
                 ),
-
-                /// BOTÃO PRINCIPAL
-                GestureDetector(
-                  onTap: tirarFoto,
-                  child: Container(
-                    width: 85,
-                    height: 85,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 4),
-                    ),
-                    child: const Center(
-                      child: CircleAvatar(
-                        radius: 32,
-                        backgroundColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-
-                /// ESPAÇO (pode virar trocar câmera depois)
-                const SizedBox(width: 35),
-              ],
+              ),
             ),
           ),
         ],
