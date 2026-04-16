@@ -2,8 +2,9 @@ import 'dart:typed_data';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 
 class CameraPage extends StatefulWidget {
@@ -13,13 +14,14 @@ class CameraPage extends StatefulWidget {
   State<CameraPage> createState() => _CameraPageState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class _CameraPageState extends State<CameraPage>
+    with SingleTickerProviderStateMixin {
   CameraController? controller;
   List<CameraDescription>? cameras;
 
   Uint8List? _imageBytes;
   String? _resultado;
-  String? _imagemSimilar;
+  double _confianca = 0;
 
   bool _loading = false;
   bool _modoEscolhido = false;
@@ -28,14 +30,35 @@ class _CameraPageState extends State<CameraPage> {
 
   final picker = ImagePicker();
 
-  // =========================
-  // ESCOLHA MODO
+  late AnimationController _animController;
+  late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _animController, curve: Curves.easeOut));
+  }
+
   // =========================
   void escolherModo(bool camera) async {
     setState(() {
       _modoEscolhido = true;
       _usarCamera = camera;
     });
+
+    if (kIsWeb && camera) {
+      await pegarDaCameraWeb();
+      return;
+    }
 
     if (camera) {
       await iniciarCamera();
@@ -45,18 +68,25 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   // =========================
-  // CAMERA
+  Future<void> pegarDaCameraWeb() async {
+    final XFile? foto = await picker.pickImage(source: ImageSource.camera);
+
+    if (foto == null) return;
+
+    final bytes = await foto.readAsBytes();
+
+    setState(() {
+      _imageBytes = bytes;
+      _resultado = null;
+    });
+
+    await identificarPlanta();
+  }
+
   // =========================
   Future<void> iniciarCamera() async {
     try {
       cameras = await availableCameras();
-
-      if (!mounted) return;
-
-      if (cameras == null || cameras!.isEmpty) {
-        setState(() => _cameraDisponivel = false);
-        return;
-      }
 
       controller = CameraController(
         cameras!.first,
@@ -66,69 +96,42 @@ class _CameraPageState extends State<CameraPage> {
 
       await controller!.initialize();
 
-      if (!mounted) return;
-
       setState(() => _cameraDisponivel = true);
     } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _cameraDisponivel = false;
-        _usarCamera = false;
-      });
+      setState(() => _cameraDisponivel = false);
     }
   }
 
-  // =========================
-  // FOTO CAMERA
-  // =========================
   Future<void> tirarFoto() async {
-    if (_loading) return;
-    if (controller == null || !controller!.value.isInitialized) return;
-
     final foto = await controller!.takePicture();
     final bytes = await foto.readAsBytes();
-
-    if (!mounted) return;
 
     setState(() {
       _imageBytes = bytes;
       _resultado = null;
-      _imagemSimilar = null;
     });
 
     await identificarPlanta();
   }
 
   // =========================
-  // GALERIA (WEB + MOBILE)
-  // =========================
   Future<void> pegarDaGaleria() async {
-    if (_loading) return;
-
-    final XFile? foto =
-        await picker.pickImage(source: ImageSource.gallery);
+    final XFile? foto = await picker.pickImage(source: ImageSource.gallery);
 
     if (foto == null) return;
 
     final bytes = await foto.readAsBytes();
 
-    if (!mounted) return;
-
     setState(() {
       _imageBytes = bytes;
       _resultado = null;
-      _imagemSimilar = null;
     });
 
     await identificarPlanta();
   }
 
   // =========================
-  // API PLANT.ID (CORRIGIDA)
-  // =========================
   Future<void> identificarPlanta() async {
-    if (_imageBytes == null || _loading) return;
-
     setState(() => _loading = true);
 
     try {
@@ -141,93 +144,51 @@ class _CameraPageState extends State<CameraPage> {
           'Api-Key': '0Unj3uZ9PGXuuNx84L4CqqVKzgozwEtqtRFnKjq0suYo83VP9I',
         },
         body: jsonEncode({
-          "images": ["data:image/jpeg;base64,$base64Image"],
-          "similar_images": true
+          "images": [base64Image],
+          "similar_images": true,
         }),
       );
 
-      if (!mounted) return;
-
       final data = jsonDecode(response.body);
-
-      if (response.statusCode != 200) {
-        setState(() {
-          _resultado = "Erro API: ${data['error'] ?? response.body}";
-        });
-        return;
-      }
-
-      final suggestions =
-          data['result']?['classification']?['suggestions'];
+      final s = data['result']?['classification']?['suggestions']?[0];
 
       setState(() {
-        if (suggestions == null || suggestions.isEmpty) {
-          _resultado = "Nenhuma planta identificada";
-          _imagemSimilar = null;
-        } else {
-          final s = suggestions[0];
-
-          _resultado =
-              "🌿 ${s['name']}\n"
-              "Confiança: ${(s['probability'] * 100).toStringAsFixed(2)}%";
-
-          _imagemSimilar =
-              (s['similar_images'] != null &&
-                      s['similar_images'].isNotEmpty)
-                  ? s['similar_images'][0]['url']
-                  : null;
-        }
+        _resultado = s['name'];
+        _confianca = (s['probability'] ?? 0) * 100;
       });
+
+      _animController.forward();
     } catch (e) {
-      if (!mounted) return;
       setState(() {
-        _resultado = "Erro: $e";
+        _resultado = "Erro ao identificar";
       });
     }
 
-    if (!mounted) return;
     setState(() => _loading = false);
   }
 
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
-
-  // =========================
-  // UI INICIAL
   // =========================
   @override
   Widget build(BuildContext context) {
     if (!_modoEscolhido) {
       return Scaffold(
-        body: SafeArea(
+        backgroundColor: Colors.white,
+        body: Center(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              const Expanded(
-                child: Center(
-                  child: Text(
-                    "Escolha como enviar a imagem",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
+              const Text(
+                "🌿 Identificador de Plantas",
+                style: TextStyle(fontSize: 22),
               ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => escolherModo(true),
-                      child: const Text("Usar Câmera"),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () => escolherModo(false),
-                      child: const Text("Escolher da Galeria"),
-                    ),
-                  ],
-                ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => escolherModo(true),
+                child: const Text("Usar Câmera"),
+              ),
+              ElevatedButton(
+                onPressed: () => escolherModo(false),
+                child: const Text("Galeria"),
               ),
             ],
           ),
@@ -235,81 +196,153 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    Widget cameraWidget;
+    // =========================
+    // 📷 CAMERA VIEW
+    // =========================
+    if (_usarCamera && _resultado == null) {
+      Widget cameraContent;
 
-    if (_usarCamera &&
-        _cameraDisponivel &&
-        controller != null &&
-        controller!.value.isInitialized) {
-      cameraWidget = CameraPreview(controller!);
-    } else {
-      cameraWidget = const Center(
-        child: Text("Câmera não disponível"),
+      if (kIsWeb) {
+        cameraContent = const Center(child: Text("Use a câmera do navegador"));
+      } else if (_cameraDisponivel &&
+          controller != null &&
+          controller!.value.isInitialized) {
+        cameraContent = CameraPreview(controller!);
+      } else {
+        cameraContent = const Center(child: Text("Câmera indisponível"));
+      }
+
+      return Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            Positioned.fill(child: cameraContent),
+
+            // BOTÃO VERDE BONITO
+            Positioned(
+              bottom: 30,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: GestureDetector(
+                  onTap: _usarCamera ? tirarFoto : null,
+                  child: Container(
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      color: Colors.lightGreenAccent,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(color: Colors.black26, blurRadius: 10),
+                      ],
+                    ),
+                    child: const Icon(
+                      Icons.camera_alt,
+                      size: 30,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            if (_loading) const Center(child: CircularProgressIndicator()),
+          ],
+        ),
       );
     }
 
+    // =========================
+    // 🌿 RESULTADO / GALERIA
+    // =========================
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       body: Stack(
         children: [
-          cameraWidget,
-
-          // IMAGEM PREVIEW
           if (_imageBytes != null)
             Positioned(
-              top: 20,
-              left: 20,
-              right: 20,
+              top: 60,
+              left: 30,
+              right: 30,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(20),
                 child: Image.memory(
                   _imageBytes!,
-                  height: 180,
+                  height: 200,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
 
-          // RESULTADO
           if (_resultado != null)
             Positioned(
-              top: 220,
-              left: 20,
-              right: 20,
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                color: Colors.black54,
-                child: Column(
-                  children: [
-                    Text(
-                      _resultado!,
-                      style: const TextStyle(color: Colors.white),
+              left: 16,
+              right: 16,
+              bottom: 90,
+              child: SlideTransition(
+                position: _slideAnimation,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
                     ),
-                    if (_imagemSimilar != null)
-                      Image.network(_imagemSimilar!, height: 120),
-                  ],
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black54,
+                        blurRadius: 12,
+                        offset: Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.eco,
+                        color: Colors.lightGreenAccent,
+                        size: 40,
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        "Planta identificada",
+                        style: TextStyle(color: Colors.white70),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _resultado!,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Text(
+                        "Confiança: ${_confianca.toStringAsFixed(1)}%",
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+                      const SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: _confianca / 100,
+                          minHeight: 8,
+                          backgroundColor: Colors.white24,
+                          valueColor: const AlwaysStoppedAnimation<Color>(
+                            Colors.lightGreenAccent,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
 
-          // LOADING
-          if (_loading)
-            const Center(child: CircularProgressIndicator()),
-
-          // BOTÃO
-          Positioned(
-            bottom: 30,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: GestureDetector(
-                onTap: _usarCamera ? tirarFoto : pegarDaGaleria,
-                child: const CircleAvatar(
-                  radius: 35,
-                  backgroundColor: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          if (_loading) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );
