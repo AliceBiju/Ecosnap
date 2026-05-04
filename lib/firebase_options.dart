@@ -41,21 +41,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAV1nR_ePzO3rpo0LNF61u3fwaKTPLsPJ4',
-    appId: '1:824870373289:web:4b58fd13d4d8bcf53866b8',
-    messagingSenderId: '824870373289',
-    projectId: 'ecosnap-ec791',
-    authDomain: 'ecosnap-ec791.firebaseapp.com',
-    storageBucket: 'ecosnap-ec791.firebasestorage.app',
-    measurementId: 'G-CSTP0783B3',
+    apiKey: 'AIzaSyC5aTDTjpq_TOodczzlTLXIb6VB7j3eYRc',
+    appId: '1:777495629350:web:55f62e97d552999b3ee0e7',
+    messagingSenderId: '777495629350',
+    projectId: 'teste-847fc',
+    authDomain: 'teste-847fc.firebaseapp.com',
+    storageBucket: 'teste-847fc.firebasestorage.app',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAOMC6p2X2S_EQWhFVtqWhg7iLvH-gIkGc',
-    appId: '1:824870373289:android:b5980b66215880da3866b8',
-    messagingSenderId: '824870373289',
-    projectId: 'ecosnap-ec791',
-    storageBucket: 'ecosnap-ec791.firebasestorage.app',
+    apiKey: 'AIzaSyARJIaik_h8lKBbeEyDYJcsCHWFJAl-sWU',
+    appId: '1:777495629350:android:1685e4300b12548a3ee0e7',
+    messagingSenderId: '777495629350',
+    projectId: 'teste-847fc',
+    storageBucket: 'teste-847fc.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(

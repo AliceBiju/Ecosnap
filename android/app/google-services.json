@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "824870373289",
-    "project_id": "ecosnap-ec791",
-    "storage_bucket": "ecosnap-ec791.firebasestorage.app"
+    "project_number": "777495629350",
+    "project_id": "teste-847fc",
+    "storage_bucket": "teste-847fc.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:824870373289:android:b5980b66215880da3866b8",
+        "mobilesdk_app_id": "1:777495629350:android:1685e4300b12548a3ee0e7",
         "android_client_info": {
           "package_name": "com.example.flutter_application_2"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAOMC6p2X2S_EQWhFVtqWhg7iLvH-gIkGc"
+          "current_key": "AIzaSyARJIaik_h8lKBbeEyDYJcsCHWFJAl-sWU"
         }
       ],
       "services": {
