@@ -52,22 +52,21 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final novoUsuario = User.forRegistration(name: email.split('@')[0], 
-    email: email, 
-    password: senha
+    final novoUsuario = User.forRegistration(
+      name: email.split('@')[0],
+      email: email,
+      password: senha,
     );
 
     final sucesso = await _newAuthService.register(novoUsuario);
 
-    if(sucesso){
+    if (sucesso) {
       mostrarMensagem("Conta criada com sucesso!");
       emailController.clear();
       senhaController.clear();
-    }else{
+    } else {
       mostrarMensagem('Email já cadastrado');
     }
-
-
   }
 
   @override
