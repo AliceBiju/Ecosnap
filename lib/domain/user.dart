@@ -5,24 +5,21 @@ class User {
   final String name;
   final String email;
   final String profilePictureURL;
-  final DateTime createdAt;
 
   User({
     required this.id,
     required this.name,
     required this.email,
     required this.profilePictureURL,
-    required this.createdAt,
   });
 
   factory User.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map;
     return User(
-      id: data['id'] ?? '',
+      id: doc.id,
       name: data['name'] ?? '',
       email: data['email'] ?? '',
       profilePictureURL: data['profilePictureURL'] ?? '',
-      createdAt: data['createdAt'] ?? '',
     );
   }
 
@@ -32,7 +29,6 @@ class User {
       'name': name,
       'email': email,
       'profilePictureURL': profilePictureURL,
-      'createdAt': Timestamp.fromDate(createdAt),
     };
   }
 }
