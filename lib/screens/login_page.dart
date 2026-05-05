@@ -1,5 +1,7 @@
+import 'package:ecosnap/domain/user.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import 'package:ecosnap/services/new_auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -9,6 +11,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final NewAuthService _newAuthService = NewAuthService();
+
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
 
@@ -25,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    final ok = await AuthService.login(email, senha);
+    final ok = await _newAuthService.login(email, senha);
 
     if (ok) {
       Navigator.pushReplacementNamed(context, '/profile');
@@ -48,12 +52,22 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    await AuthService.register(email, senha);
+    final novoUsuario = User.forRegistration(name: email.split('@')[0], 
+    email: email, 
+    password: senha
+    );
 
-    mostrarMensagem("Conta criada com sucesso!");
+    final sucesso = await _newAuthService.register(novoUsuario);
 
-    emailController.clear();
-    senhaController.clear();
+    if(sucesso){
+      mostrarMensagem("Conta criada com sucesso!");
+      emailController.clear();
+      senhaController.clear();
+    }else{
+      mostrarMensagem('Email já cadastrado');
+    }
+
+
   }
 
   @override

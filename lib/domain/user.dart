@@ -4,14 +4,23 @@ class User {
   final String id;
   final String name;
   final String email;
+  final String password;
   final String profilePictureURL;
 
   User({
-    required this.id,
+    this.id = '',
     required this.name,
     required this.email,
-    required this.profilePictureURL,
+    required this.password,
+    this.profilePictureURL = '',
   });
+
+  User.forRegistration({
+    required this.name,
+    required this.email,
+    required this.password
+  }) : id = '',
+       profilePictureURL='';
 
   factory User.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map;
@@ -19,6 +28,7 @@ class User {
       id: doc.id,
       name: data['name'] ?? '',
       email: data['email'] ?? '',
+      password: data['password'] ?? '',
       profilePictureURL: data['profilePictureURL'] ?? '',
     );
   }
@@ -28,7 +38,9 @@ class User {
       'id': id,
       'name': name,
       'email': email,
+      'password': password,
       'profilePictureURL': profilePictureURL,
     };
   }
+
 }
