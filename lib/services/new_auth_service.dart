@@ -25,7 +25,7 @@ static const String _sessionKey = "user_id";
 
     if(userJustCreated != null){
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_sessionKey, user.id);
+      await prefs.setString(_sessionKey, userJustCreated.id);
       return true;
     }
 

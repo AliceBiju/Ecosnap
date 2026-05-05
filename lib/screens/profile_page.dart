@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart';
+import '../services/new_auth_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -9,6 +9,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final NewAuthService _authService = NewAuthService();
   String? email;
 
   @override
@@ -18,12 +19,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void carregar() async {
-    final e = await AuthService.getEmail();
+    final e = await _authService.getEmail();
     setState(() => email = e);
   }
 
   void logout() async {
-    await AuthService.logout();
+    await _authService.logout();
     setState(() => email = null);
   }
 
