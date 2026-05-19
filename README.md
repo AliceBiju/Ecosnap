@@ -110,3 +110,5 @@ Este projeto está sob a licença MIT.
 O EcoSnap é um projeto de Dispositivos Móveis de alunos do IFSP - Campus Jacaré que une tecnologia e natureza, permitindo que usuários identifiquem plantas e compartilhem conhecimento em uma comunidade colaborativa. A proposta é tornar o aprendizado sobre o meio ambiente mais acessível, interativo e integrado ao cotidiano.
 
 💚 Conectando pessoas à natureza através da tecnologia.
+
+[Canva](https://canva.link/b96q0fu1hno1x35)
