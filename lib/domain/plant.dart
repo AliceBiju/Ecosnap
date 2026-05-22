@@ -5,9 +5,7 @@ class Plant {
   final String userId;
   final String commonName;
   final String scientificName;
-  final String synonyms;
   final String description;
-  final String taxonomy;
   final String watering;
 
   String imageUrl;
@@ -17,9 +15,7 @@ class Plant {
     required this.userId,
     required this.commonName,
     required this.scientificName,
-    required this.synonyms,
     required this.description,
-    required this.taxonomy,
     required this.watering,
     this.imageUrl ='',
   });
@@ -27,9 +23,7 @@ class Plant {
   Plant.forRegistration({
     required this.commonName,
     required this.scientificName,
-    required this.synonyms,
     required this.description,
-    required this.taxonomy,
     required this.watering,
   }) : id = '', 
        userId = '',
@@ -42,9 +36,7 @@ class Plant {
       userId: data['userId'], 
       commonName: data['commonName'], 
       scientificName: data['scientificName'], 
-      synonyms: data['synonyms'], 
       description: data['description'], 
-      taxonomy: data['taxonomy'], 
       watering: data["watering"]
     );
   }
@@ -54,9 +46,7 @@ class Plant {
       'userId':userId,
       "commonName": commonName, 
       "scientificName": scientificName, 
-      "synonyms": synonyms, 
       "description": description, 
-      "taxonomy": taxonomy, 
       "watering": watering,
     };
   }

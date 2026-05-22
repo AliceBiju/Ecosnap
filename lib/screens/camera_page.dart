@@ -20,6 +20,9 @@ class _CameraPageState extends State<CameraPage>
 
   Uint8List? _imageBytes;
   String? _resultado;
+  String? _descricao;
+  var _irrigacao;
+  String? _nomeComum;
   double _confianca = 0;
 
   bool _loading = false;
@@ -77,6 +80,9 @@ class _CameraPageState extends State<CameraPage>
     setState(() {
       _imageBytes = bytes;
       _resultado = null;
+      _descricao = null;
+      _nomeComum = null;
+      _irrigacao = null;
     });
 
     await identificarPlanta();
@@ -108,6 +114,9 @@ class _CameraPageState extends State<CameraPage>
     setState(() {
       _imageBytes = bytes;
       _resultado = null;
+      _descricao = null;
+      _nomeComum = null;
+      _irrigacao = null;
     });
 
     await identificarPlanta();
@@ -124,6 +133,9 @@ class _CameraPageState extends State<CameraPage>
     setState(() {
       _imageBytes = bytes;
       _resultado = null;
+      _descricao = null;
+      _nomeComum = null;
+      _irrigacao = null;
     });
 
     await identificarPlanta();
@@ -138,7 +150,7 @@ class _CameraPageState extends State<CameraPage>
       final base64Image = base64Encode(_imageBytes!);
 
       final response = await http.post(
-        Uri.parse('https://plant.id/api/v3/identification'),
+        Uri.parse('https://plant.id/api/v3/identification?details=common_names,description_all,watering&language=pt'),
         headers: {
           'Content-Type': 'application/json',
           'Api-Key': apiKey,
@@ -153,8 +165,38 @@ class _CameraPageState extends State<CameraPage>
       final s = data['result']?['classification']?['suggestions']?[0];
 
       setState(() {
-        _resultado = s['name'];
+        print(data);
+        _resultado = s['name']; // Scientific name
         _confianca = (s['probability'] ?? 0) * 100;
+        
+        final details = s['details'];
+        if (details != null) {
+          _descricao = details['description_all']?['value'] ?? details['description']?['value'] ?? "Nenhuma descrição em português foi encontrada na base de dados.";
+          
+          int? minWatering = details['watering']?['min'];
+          int? maxWatering = details['watering']?['max'];
+          
+          String nomeNivel(int val) {
+            if (val == 1) return "Seco";
+            if (val == 2) return "Moderado";
+            if (val == 3) return "Úmido";
+            return val.toString();
+          }
+
+          if (minWatering != null && maxWatering != null) {
+            _irrigacao = minWatering == maxWatering 
+                ? nomeNivel(minWatering) 
+                : "${nomeNivel(minWatering)} a ${nomeNivel(maxWatering)}";
+          } else if (minWatering != null) {
+            _irrigacao = "${nomeNivel(minWatering)}";
+          } else {
+            _irrigacao = null;
+          }
+          
+          if (details['common_names'] != null && (details['common_names'] as List).isNotEmpty) {
+            _nomeComum = details['common_names'][0];
+          }
+        }
       });
 
       _animController.forward();
@@ -167,8 +209,10 @@ class _CameraPageState extends State<CameraPage>
     setState(() => _loading = false);
   }
 
+
+
   // =========================
-  @override
+   @override
   Widget build(BuildContext context) {
     if (!_modoEscolhido) {
       return Scaffold(
@@ -311,7 +355,7 @@ class _CameraPageState extends State<CameraPage>
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        _resultado!,
+                        _nomeComum != null ? _nomeComum!.toUpperCase() : _resultado!.toUpperCase(),
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.white,
@@ -319,6 +363,18 @@ class _CameraPageState extends State<CameraPage>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      if (_nomeComum != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Text(
+                            _resultado!,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 15),
                       Text(
                         "Confiança: ${_confianca.toStringAsFixed(1)}%",
@@ -335,6 +391,29 @@ class _CameraPageState extends State<CameraPage>
                             Colors.lightGreenAccent,
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 20),
+                      if (_irrigacao != null) ...[
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.water_drop, color: Colors.lightBlueAccent, size: 20),
+                            const SizedBox(width: 5),
+                            Text(
+                              "Irrigação: ${_irrigacao!}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ],
+                      const SizedBox(height: 15),
+                      const Divider(color: Colors.white54),
+                      const SizedBox(height: 10),
+                      Text(
+                        _descricao ?? "Nenhuma descrição disponível.",
+                        style: const TextStyle(color: Colors.white70, fontSize: 13),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),

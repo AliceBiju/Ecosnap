@@ -1,6 +1,5 @@
 import 'package:ecosnap/domain/user.dart';
 import 'package:flutter/material.dart';
-import 'package:ecosnap/services/auth_service.dart';
 import 'package:ecosnap/services/new_auth_service.dart';
 
 class LoginPage extends StatefulWidget {
