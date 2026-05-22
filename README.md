@@ -68,8 +68,13 @@ cd Ecosnap
 # Instale as dependências
 flutter pub get
 
+#
+
 # Execute o aplicativo
-flutter run
+flutter run --dart-define-from-file=.env
+
+# Para web-only
+flutter run --dart-define-from-file=.env -d web-server
 ```
 
 

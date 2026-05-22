@@ -131,6 +131,7 @@ class _CameraPageState extends State<CameraPage>
 
   // =========================
   Future<void> identificarPlanta() async {
+    final apiKey = const String.fromEnvironment('PLANT_ID_KEY');
     setState(() => _loading = true);
 
     try {
@@ -140,7 +141,7 @@ class _CameraPageState extends State<CameraPage>
         Uri.parse('https://plant.id/api/v3/identification'),
         headers: {
           'Content-Type': 'application/json',
-          'Api-Key': '0Unj3uZ9PGXuuNx84L4CqqVKzgozwEtqtRFnKjq0suYo83VP9I',
+          'Api-Key': apiKey,
         },
         body: jsonEncode({
           "images": [base64Image],
