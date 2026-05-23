@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 import 'screens/home_page.dart';
-import 'screens/chat_page.dart';
 import 'screens/camera_page.dart';
 import 'screens/profile_page.dart';
 import 'screens/login_page.dart';
+import 'screens/community_page.dart';
+import 'screens/create_post_page.dart';
+import 'screens/history_page.dart';
+import 'screens/plant_details_page.dart';
+import 'screens/post_details_page.dart';
+import 'screens/edit_profile_page.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -18,9 +23,8 @@ void main() async {
       'status': 'conectado',
       'data': DateTime.now().toString(),
     });
-    print("Sucesso");
   } catch (e) {
-    print("Erro");
+    print(e);
   }
   runApp(const MyApp());
 }
@@ -35,11 +39,16 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
+        '/community': (context) => const CommunityPage(),
         '/home': (context) => const HomePage(),
-        '/chat': (context) => const ChatPage(),
         '/camera': (context) => const CameraPage(),
         '/profile': (context) => const ProfilePage(),
         '/login': (context) => const LoginPage(),
+        '/create-post': (context) => const CreatePostPage(),
+        '/history': (context) => const HistoryPage(),
+        '/plant-details': (context) => const PlantDetailsPage(),
+        '/post-details': (context) => const PostDetailsPage(),
+        '/edit-profile': (context) => const EditProfilePage(),
       },
     );
   }

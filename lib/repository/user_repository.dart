@@ -1,4 +1,4 @@
-import 'package:ecosnap/domain/user.dart';
+import 'package:ecosnap/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserRepository {

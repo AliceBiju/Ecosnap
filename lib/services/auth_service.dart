@@ -1,45 +1,82 @@
-import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ecosnap/repository/user_repository.dart';
+import 'package:ecosnap/models/user.dart';
+import 'session_manager.dart';
 
 class AuthService {
-  static const String _key = "user";
+  final UserRepository _repository = UserRepository();
 
-  static Future<void> register(String email, String senha) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final user = {"email": email, "senha": senha};
-
-    await prefs.setString(_key, jsonEncode(user));
+  Future<bool> userExists(String email) async {
+    final user = await _repository.getUserByEmail(email);
+    return user != null;
   }
 
-  static Future<bool> login(String email, String senha) async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString(_key);
+  Future<bool> register(User user) async {
+    if (await userExists(user.email)) return false;
 
-    if (data == null) return false;
+    await _repository.saveUser(user);
 
-    final user = jsonDecode(data);
+    final created = await _repository.getUserByEmail(user.email);
+    if (created != null) {
+      await SessionManager.save(created.id);
+      return true;
+    }
 
-    return user["email"] == email && user["senha"] == senha;
+    return false;
   }
 
-  static Future<String?> getEmail() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString(_key);
-
-    if (data == null) return null;
-
-    final user = jsonDecode(data);
-    return user["email"];
+  Future<bool> login(String email, String password) async {
+    final userInDb = await _repository.getUserByEmail(email);
+    if (userInDb != null && userInDb.password == password) {
+      await SessionManager.save(userInDb.id);
+      return true;
+    }
+    return false;
   }
 
-  static Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_key);
+  Future<String?> getCurrentUserId() async {
+    return await SessionManager.get();
   }
 
-  static Future<bool> isLogged() async {
-    final email = await getEmail();
-    return email != null;
+  Future<String?> getEmail() async {
+    final uid = await SessionManager.get();
+    if (uid != null) {
+      final user = await _repository.getUser(uid);
+      return user?.email;
+    }
+    return null;
+  }
+
+  Future<String?> getName() async {
+    final uid = await SessionManager.get();
+    if (uid != null) {
+      final user = await _repository.getUser(uid);
+      return user?.name;
+    }
+    return null;
+  }
+
+  Future<void> logout() async {
+    await SessionManager.clear();
+  }
+
+  Future<bool> isLogged() async {
+    return await SessionManager.get() != null;
+  }
+
+  /// Retorna o objeto User completo do usuário logado.
+  Future<User?> getCurrentUser() async {
+    final uid = await SessionManager.get();
+    if (uid == null) return null;
+    return await _repository.getUser(uid);
+  }
+
+  /// Atualiza o nome e a senha do usuário logado.
+  Future<void> updateProfile(String name, String password) async {
+    final uid = await SessionManager.get();
+    if (uid == null) return;
+    await _repository.updateUser(uid, {
+      'name': name,
+      'password': password,
+    });
   }
 }

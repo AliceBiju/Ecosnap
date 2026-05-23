@@ -5,15 +5,6 @@ import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
-///
-/// Example:
-/// ```dart
-/// import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
@@ -58,30 +49,27 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC7BTO7PRXK0jQIkal9a_dg3hqvFuLf1Q4',
-    appId: '1:824870373289:ios:cc0b7c855245fb1d3866b8',
-    messagingSenderId: '824870373289',
-    projectId: 'ecosnap-ec791',
-    storageBucket: 'ecosnap-ec791.firebasestorage.app',
-    iosBundleId: 'com.example.flutterApplication2',
+    apiKey: 'AIzaSyC5aTDTjpq_TOodczzlTLXIb6VB7j3eYRc',
+    appId: '1:777495629350:web:55f62e97d552999b3ee0e7',
+    messagingSenderId: '777495629350',
+    projectId: 'teste-847fc',
+    storageBucket: 'teste-847fc.firebasestorage.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyC7BTO7PRXK0jQIkal9a_dg3hqvFuLf1Q4',
-    appId: '1:824870373289:ios:cc0b7c855245fb1d3866b8',
-    messagingSenderId: '824870373289',
-    projectId: 'ecosnap-ec791',
-    storageBucket: 'ecosnap-ec791.firebasestorage.app',
-    iosBundleId: 'com.example.flutterApplication2',
+    apiKey: 'AIzaSyC5aTDTjpq_TOodczzlTLXIb6VB7j3eYRc',
+    appId: '1:777495629350:web:55f62e97d552999b3ee0e7',
+    messagingSenderId: '777495629350',
+    projectId: 'teste-847fc',
+    storageBucket: 'teste-847fc.firebasestorage.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAV1nR_ePzO3rpo0LNF61u3fwaKTPLsPJ4',
-    appId: '1:824870373289:web:f0e6ba838fe8df693866b8',
-    messagingSenderId: '824870373289',
-    projectId: 'ecosnap-ec791',
-    authDomain: 'ecosnap-ec791.firebaseapp.com',
-    storageBucket: 'ecosnap-ec791.firebasestorage.app',
-    measurementId: 'G-FPXCYVW1YJ',
+    apiKey: 'AIzaSyC5aTDTjpq_TOodczzlTLXIb6VB7j3eYRc',
+    appId: '1:777495629350:web:55f62e97d552999b3ee0e7',
+    messagingSenderId: '777495629350',
+    projectId: 'teste-847fc',
+    authDomain: 'teste-847fc.firebaseapp.com',
+    storageBucket: 'teste-847fc.firebasestorage.app',
   );
 }
