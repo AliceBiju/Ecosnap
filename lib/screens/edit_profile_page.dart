@@ -206,7 +206,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          labelText: "Nova Senha (Deixe em branco para não alterar)",
+                          labelText: "Nova Senha",
                           prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF7BB88D)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),

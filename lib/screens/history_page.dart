@@ -32,6 +32,7 @@ class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return MainLayout(
+      showBackButton: true,
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _stream == null

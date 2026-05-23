@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class MainLayout extends StatelessWidget {
   final Widget body;
   final Widget? floatingActionButton;
+  final bool showBackButton;
 
   const MainLayout({
     super.key,
     required this.body,
     this.floatingActionButton,
+    this.showBackButton = false,
   });
 
   @override
@@ -27,8 +29,14 @@ class MainLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF7BB88D),
-        // Remove a seta de voltar automática no Scaffold principal
-        automaticallyImplyLeading: false,
+        // Remove a seta de voltar automática no Scaffold principal se showBackButton for falso
+        automaticallyImplyLeading: showBackButton,
+        leading: showBackButton
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () => Navigator.pop(context),
+              )
+            : null,
         title: GestureDetector(
           onTap: () {
             Navigator.pushNamedAndRemoveUntil(
