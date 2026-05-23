@@ -31,7 +31,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (user != null) {
         setState(() {
           _nameController.text = user.name;
-          _passwordController.text = user.password;
           _email = user.email;
           _isLoading = false;
         });
@@ -207,7 +206,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          labelText: "Nova Senha",
+                          labelText: "Nova Senha (Deixe em branco para não alterar)",
                           prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF7BB88D)),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -220,10 +219,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           fillColor: Colors.white,
                         ),
                         validator: (value) {
-                          if (value == null || value.trim().isEmpty) {
-                            return "Insira sua senha";
-                          }
-                          if (value.length < 4) {
+                          if (value != null && value.isNotEmpty && value.length < 4) {
                             return "A senha deve ter pelo menos 4 caracteres";
                           }
                           return null;

@@ -94,15 +94,19 @@ class AuthService {
     return await _repository.getUser(uid);
   }
 
-  /// Atualiza o nome e a senha (criptografada) do usuário logado.
-  Future<void> updateProfile(String name, String password) async {
+  /// Atualiza o nome e, opcionalmente, a senha (criptografada) do usuário logado.
+  Future<void> updateProfile(String name, String? password) async {
     final uid = await SessionManager.get();
     if (uid == null) return;
 
-    final hashedPassword = _hashPassword(password);
-    await _repository.updateUser(uid, {
+    final Map<String, dynamic> dataToUpdate = {
       'name': name,
-      'password': hashedPassword,
-    });
+    };
+
+    if (password != null && password.trim().isNotEmpty) {
+      dataToUpdate['password'] = _hashPassword(password.trim());
+    }
+
+    await _repository.updateUser(uid, dataToUpdate);
   }
 }

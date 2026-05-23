@@ -16,6 +16,7 @@ import 'firebase_options.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   try {
