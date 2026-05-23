@@ -1,9 +1,18 @@
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 import 'package:ecosnap/repository/user_repository.dart';
 import 'package:ecosnap/models/user.dart';
 import 'session_manager.dart';
 
 class AuthService {
   final UserRepository _repository = UserRepository();
+
+  /// Gera hash SHA-256 para a senha do usuário
+  String _hashPassword(String password) {
+    final bytes = utf8.encode(password);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
 
   Future<bool> userExists(String email) async {
     final user = await _repository.getUserByEmail(email);
@@ -13,7 +22,17 @@ class AuthService {
   Future<bool> register(User user) async {
     if (await userExists(user.email)) return false;
 
-    await _repository.saveUser(user);
+    // Criptografa/Hash da senha antes de salvar
+    final hashedPassword = _hashPassword(user.password);
+    final userToSave = User(
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: hashedPassword,
+      profilePictureURL: user.profilePictureURL,
+    );
+
+    await _repository.saveUser(userToSave);
 
     final created = await _repository.getUserByEmail(user.email);
     if (created != null) {
@@ -26,9 +45,14 @@ class AuthService {
 
   Future<bool> login(String email, String password) async {
     final userInDb = await _repository.getUserByEmail(email);
-    if (userInDb != null && userInDb.password == password) {
-      await SessionManager.save(userInDb.id);
-      return true;
+    if (userInDb != null) {
+      final hashedInput = _hashPassword(password);
+      // Fallback: Permite login se a senha no banco for igual ao hash da entrada
+      // OU se for igual à senha plana (para contas criadas anteriormente)
+      if (userInDb.password == hashedInput || userInDb.password == password) {
+        await SessionManager.save(userInDb.id);
+        return true;
+      }
     }
     return false;
   }
@@ -70,13 +94,15 @@ class AuthService {
     return await _repository.getUser(uid);
   }
 
-  /// Atualiza o nome e a senha do usuário logado.
+  /// Atualiza o nome e a senha (criptografada) do usuário logado.
   Future<void> updateProfile(String name, String password) async {
     final uid = await SessionManager.get();
     if (uid == null) return;
+
+    final hashedPassword = _hashPassword(password);
     await _repository.updateUser(uid, {
       'name': name,
-      'password': password,
+      'password': hashedPassword,
     });
   }
 }
