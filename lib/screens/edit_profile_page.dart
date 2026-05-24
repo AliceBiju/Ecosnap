@@ -10,11 +10,11 @@ class EditProfilePage extends StatefulWidget {
 
 class _EditProfilePageState extends State<EditProfilePage> {
   final AuthService _authService = AuthService();
-  
+
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _passwordController = TextEditingController();
-  
+
   String _email = "";
   bool _isLoading = true;
   bool _isSaving = false;
@@ -73,10 +73,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
             content: const Text("Perfil atualizado com sucesso! 🌱"),
             backgroundColor: const Color(0xFF2E7D32),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
-        Navigator.pop(context); 
+        Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
@@ -100,10 +102,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         elevation: 0,
         title: const Text(
           "Editar Perfil",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -121,7 +120,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     children: [
                       const SizedBox(height: 30),
 
-                      
                       Center(
                         child: Container(
                           decoration: BoxDecoration(
@@ -136,13 +134,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ),
                           child: const CircleAvatar(
                             radius: 50,
-                            backgroundImage: AssetImage("assets/images/Logo.jpg"),
+                            backgroundImage: AssetImage(
+                              "assets/images/Logo.jpg",
+                            ),
                           ),
                         ),
                       ),
-                      
+
                       const SizedBox(height: 12),
-                      
+
                       const Center(
                         child: Text(
                           "EcoSnap Member",
@@ -156,19 +156,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 35),
 
-                      
                       TextFormField(
                         controller: _nameController,
                         textCapitalization: TextCapitalization.words,
                         decoration: InputDecoration(
                           labelText: "Nome Completo",
-                          prefixIcon: const Icon(Icons.person_outline, color: Color(0xFF7BB88D)),
+                          prefixIcon: const Icon(
+                            Icons.person_outline,
+                            color: Color(0xFF7BB88D),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF7BB88D),
+                              width: 2,
+                            ),
                           ),
                           filled: true,
                           fillColor: Colors.white,
@@ -183,14 +188,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 20),
 
-                      
                       TextFormField(
                         initialValue: _email,
                         readOnly: true,
                         enabled: false,
                         decoration: InputDecoration(
                           labelText: "E-mail (Não editável)",
-                          prefixIcon: const Icon(Icons.email_outlined, color: Colors.grey),
+                          prefixIcon: const Icon(
+                            Icons.email_outlined,
+                            color: Colors.grey,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -201,25 +208,32 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 20),
 
-                      
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: "Nova Senha",
-                          prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF7BB88D)),
+                          prefixIcon: const Icon(
+                            Icons.lock_outline,
+                            color: Color(0xFF7BB88D),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF7BB88D),
+                              width: 2,
+                            ),
                           ),
                           filled: true,
                           fillColor: Colors.white,
                         ),
                         validator: (value) {
-                          if (value != null && value.isNotEmpty && value.length < 4) {
+                          if (value != null &&
+                              value.isNotEmpty &&
+                              value.length < 4) {
                             return "A senha deve ter pelo menos 4 caracteres";
                           }
                           return null;
@@ -228,7 +242,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 35),
 
-                      
                       ElevatedButton(
                         onPressed: _isSaving ? null : _salvar,
                         style: ElevatedButton.styleFrom(

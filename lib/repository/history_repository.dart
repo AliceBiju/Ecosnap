@@ -8,17 +8,17 @@ class HistoryRepository {
     return _db.collection('users').doc(userId).collection('history');
   }
 
-  
   Future<void> addScan(String userId, PlantScan scan) async {
     await _historyRef(userId).add(scan.toFirestore());
   }
 
-  
   Stream<List<PlantScan>> getHistory(String userId) {
     return _historyRef(userId)
         .orderBy('scannedAt', descending: true)
         .snapshots()
-        .map((snap) =>
-            snap.docs.map((doc) => PlantScan.fromFirestore(doc)).toList());
+        .map(
+          (snap) =>
+              snap.docs.map((doc) => PlantScan.fromFirestore(doc)).toList(),
+        );
   }
 }

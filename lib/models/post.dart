@@ -24,7 +24,7 @@ class Post {
   factory Post.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     final likedByData = data['likedBy'];
-    
+
     return Post(
       id: doc.id,
       userId: data['userId'] ?? '',

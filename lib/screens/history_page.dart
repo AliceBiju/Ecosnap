@@ -33,35 +33,37 @@ class _HistoryPageState extends State<HistoryPage> {
   Widget build(BuildContext context) {
     return MainLayout(
       showBackButton: true,
+      appBarTitle: "Histórico de Reconhecimento",
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _stream == null
-              ? _emptyState('Faça login para ver seu histórico.')
-              : StreamBuilder<List<PlantScan>>(
-                  stream: _stream,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Erro: ${snapshot.error}'));
-                    }
+          ? _emptyState('Faça login para ver seu histórico.')
+          : StreamBuilder<List<PlantScan>>(
+              stream: _stream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Erro: ${snapshot.error}'));
+                }
 
-                    final scans = snapshot.data ?? [];
+                final scans = snapshot.data ?? [];
 
-                    if (scans.isEmpty) {
-                      return _emptyState(
-                          'Nenhuma planta escaneada ainda.\nUse a câmera para identificar plantas!');
-                    }
+                if (scans.isEmpty) {
+                  return _emptyState(
+                    'Nenhuma planta escaneada ainda.\nUse a câmera para identificar plantas!',
+                  );
+                }
 
-                    return ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: scans.length,
-                      itemBuilder: (context, index) =>
-                          _ScanCard(scan: scans[index]),
-                    );
-                  },
-                ),
+                return ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: scans.length,
+                  itemBuilder: (context, index) =>
+                      _ScanCard(scan: scans[index]),
+                );
+              },
+            ),
     );
   }
 
@@ -90,8 +92,9 @@ class _ScanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final displayName =
-        scan.commonName.isNotEmpty ? scan.commonName : scan.scientificName;
+    final displayName = scan.commonName.isNotEmpty
+        ? scan.commonName
+        : scan.scientificName;
     final date = scan.scannedAt;
     final dateStr =
         '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}  ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
@@ -102,11 +105,7 @@ class _ScanCard extends StatelessWidget {
       elevation: 2,
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/plant-details',
-            arguments: scan,
-          );
+          Navigator.pushNamed(context, '/plant-details', arguments: scan);
         },
         borderRadius: BorderRadius.circular(15),
         child: Padding(
@@ -114,7 +113,6 @@ class _ScanCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: SizedBox(
@@ -131,12 +129,10 @@ class _ScanCard extends StatelessWidget {
               ),
               const SizedBox(width: 14),
 
-              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     Row(
                       children: [
                         Expanded(
@@ -153,9 +149,13 @@ class _ScanCard extends StatelessWidget {
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF7BB88D).withValues(alpha: 0.2),
+                            color: const Color(
+                              0xFF7BB88D,
+                            ).withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
@@ -170,7 +170,6 @@ class _ScanCard extends StatelessWidget {
                       ],
                     ),
 
-                    
                     if (scan.commonName.isNotEmpty &&
                         scan.scientificName.isNotEmpty) ...[
                       const SizedBox(height: 2),
@@ -188,47 +187,56 @@ class _ScanCard extends StatelessWidget {
 
                     const SizedBox(height: 6),
 
-                    
                     if (scan.watering.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4),
                         child: Row(
                           children: [
-                            const Icon(Icons.water_drop,
-                                size: 14, color: Colors.lightBlue),
+                            const Icon(
+                              Icons.water_drop,
+                              size: 14,
+                              color: Colors.lightBlue,
+                            ),
                             const SizedBox(width: 4),
                             Text(
                               'Rega: ${scan.watering}',
                               style: const TextStyle(
-                                  fontSize: 12, color: Colors.black87),
+                                fontSize: 12,
+                                color: Colors.black87,
+                              ),
                             ),
                           ],
                         ),
                       ),
 
-                    
                     if (scan.description.isNotEmpty)
                       Text(
                         scan.description,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                            fontSize: 12, color: Colors.black54),
+                          fontSize: 12,
+                          color: Colors.black54,
+                        ),
                       ),
 
                     const SizedBox(height: 8),
 
-                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const Icon(Icons.access_time,
-                            size: 12, color: Colors.grey),
+                        const Icon(
+                          Icons.access_time,
+                          size: 12,
+                          color: Colors.grey,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           dateStr,
                           style: const TextStyle(
-                              fontSize: 11, color: Colors.grey),
+                            fontSize: 11,
+                            color: Colors.grey,
+                          ),
                         ),
                       ],
                     ),

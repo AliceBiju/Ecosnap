@@ -18,9 +18,9 @@ class User {
   User.forRegistration({
     required this.name,
     required this.email,
-    required this.password
+    required this.password,
   }) : id = '',
-       profilePictureURL='';
+       profilePictureURL = '';
 
   factory User.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data() as Map;
@@ -42,5 +42,4 @@ class User {
       'profilePictureURL': profilePictureURL,
     };
   }
-
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'session_manager_web.dart' if (dart.library.io) 'session_manager_stub.dart';
+import 'session_manager_web.dart'
+    if (dart.library.io) 'session_manager_stub.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-
-
 
 class SessionManager {
   static const String _key = 'user_id';

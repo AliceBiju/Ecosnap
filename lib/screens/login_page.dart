@@ -32,7 +32,9 @@ class _LoginPageState extends State<LoginPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(msg),
-        backgroundColor: msg.contains("sucesso") ? const Color(0xFF2E7D32) : Colors.redAccent,
+        backgroundColor: msg.contains("sucesso")
+            ? const Color(0xFF2E7D32)
+            : Colors.redAccent,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
@@ -65,7 +67,10 @@ class _LoginPageState extends State<LoginPage> {
     final senha = senhaController.text.trim();
     final confirmarSenha = confirmarSenhaController.text.trim();
 
-    if (nome.isEmpty || email.isEmpty || senha.isEmpty || confirmarSenha.isEmpty) {
+    if (nome.isEmpty ||
+        email.isEmpty ||
+        senha.isEmpty ||
+        confirmarSenha.isEmpty) {
       mostrarMensagem("Preencha todos os campos");
       return;
     }
@@ -112,7 +117,6 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 40),
 
-              
               const CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage("assets/images/Logo.jpg"),
@@ -131,7 +135,6 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 30),
 
-              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -150,13 +153,19 @@ class _LoginPageState extends State<LoginPage> {
                         textCapitalization: TextCapitalization.words,
                         decoration: InputDecoration(
                           labelText: "Nome Completo",
-                          prefixIcon: const Icon(Icons.person_outline, color: Color(0xFF7BB88D)),
+                          prefixIcon: const Icon(
+                            Icons.person_outline,
+                            color: Color(0xFF7BB88D),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF7BB88D),
+                              width: 2,
+                            ),
                           ),
                         ),
                       ),
@@ -168,13 +177,19 @@ class _LoginPageState extends State<LoginPage> {
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelText: "Email",
-                        prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF7BB88D)),
+                        prefixIcon: const Icon(
+                          Icons.email_outlined,
+                          color: Color(0xFF7BB88D),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF7BB88D),
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
@@ -186,13 +201,19 @@ class _LoginPageState extends State<LoginPage> {
                       obscureText: true,
                       decoration: InputDecoration(
                         labelText: "Senha",
-                        prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF7BB88D)),
+                        prefixIcon: const Icon(
+                          Icons.lock_outline,
+                          color: Color(0xFF7BB88D),
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                          borderSide: const BorderSide(
+                            color: Color(0xFF7BB88D),
+                            width: 2,
+                          ),
                         ),
                       ),
                     ),
@@ -204,13 +225,19 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                         decoration: InputDecoration(
                           labelText: "Confirmar Senha",
-                          prefixIcon: const Icon(Icons.lock_reset_outlined, color: Color(0xFF7BB88D)),
+                          prefixIcon: const Icon(
+                            Icons.lock_reset_outlined,
+                            color: Color(0xFF7BB88D),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
-                            borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                            borderSide: const BorderSide(
+                              color: Color(0xFF7BB88D),
+                              width: 2,
+                            ),
                           ),
                         ),
                       ),
@@ -218,7 +245,6 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 24),
 
-                    
                     ElevatedButton(
                       onPressed: _isLoginMode ? login : cadastrar,
                       style: ElevatedButton.styleFrom(
@@ -232,13 +258,15 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       child: Text(
                         _isLoginMode ? "Entrar" : "Cadastrar",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
 
                     const SizedBox(height: 16),
 
-                    
                     TextButton(
                       onPressed: () {
                         setState(() {

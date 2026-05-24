@@ -52,7 +52,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
           content: const Text('Por favor, informe o título da publicação! 📝'),
           backgroundColor: Colors.redAccent,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
       return;
@@ -73,7 +75,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
             content: const Text('Publicação criada com sucesso! 🌱'),
             backgroundColor: const Color(0xFF2E7D32),
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
         Navigator.pop(context);
@@ -85,7 +89,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
             content: Text('Erro ao publicar: $e'),
             backgroundColor: Colors.redAccent,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
       }
@@ -110,10 +116,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         elevation: 0,
         title: const Text(
           "Nova Publicação",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -125,7 +128,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             const Text(
               "Foto da Planta",
               style: TextStyle(
@@ -143,10 +145,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 decoration: BoxDecoration(
                   color: const Color(0xFFE8F5E9),
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: const Color(0xFF7BB88D),
-                    width: 2,
-                  ),
+                  border: Border.all(color: const Color(0xFF7BB88D), width: 2),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.04),
@@ -160,15 +159,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ? Stack(
                         fit: StackFit.expand,
                         children: [
-                          Image.memory(
-                            _imageBytes!,
-                            fit: BoxFit.cover,
-                          ),
+                          Image.memory(_imageBytes!, fit: BoxFit.cover),
                           Positioned(
                             bottom: 12,
                             right: 12,
                             child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
                               decoration: BoxDecoration(
                                 color: Colors.black54,
                                 borderRadius: BorderRadius.circular(20),
@@ -176,11 +175,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               child: const Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.edit, color: Colors.white, size: 14),
+                                  Icon(
+                                    Icons.edit,
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
                                   SizedBox(width: 4),
                                   Text(
                                     "Alterar",
-                                    style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -227,7 +234,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
             const SizedBox(height: 30),
 
-            
             TextField(
               controller: _nomeController,
               textCapitalization: TextCapitalization.sentences,
@@ -239,7 +245,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF7BB88D),
+                    width: 2,
+                  ),
                 ),
                 filled: true,
                 fillColor: Colors.white,
@@ -248,7 +257,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
             const SizedBox(height: 20),
 
-            
             TextField(
               controller: _descricaoController,
               maxLines: 5,
@@ -265,7 +273,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide: const BorderSide(color: Color(0xFF7BB88D), width: 2),
+                  borderSide: const BorderSide(
+                    color: Color(0xFF7BB88D),
+                    width: 2,
+                  ),
                 ),
                 filled: true,
                 fillColor: Colors.white,
@@ -274,7 +285,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
             const SizedBox(height: 35),
 
-            
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

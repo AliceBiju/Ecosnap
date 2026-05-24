@@ -27,7 +27,6 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    
     final initialPost = ModalRoute.of(context)!.settings.arguments as Post;
 
     return Scaffold(
@@ -47,23 +46,21 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
         builder: (context, snapshot) {
           final post = snapshot.data;
           if (post == null) {
-            return const Center(
-              child: Text("Post indisponível ou excluído."),
-            );
+            return const Center(child: Text("Post indisponível ou excluído."));
           }
 
           final date = post.createdAt;
           final dateStr =
               '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} às ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
-          final isLiked = _currentUserId != null && post.likedBy.contains(_currentUserId);
+          final isLiked =
+              _currentUserId != null && post.likedBy.contains(_currentUserId);
           final likeCount = post.likedBy.length;
 
           return SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                
                 if (post.imageUrl != null)
                   Container(
                     width: double.infinity,
@@ -95,20 +92,22 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                     ),
                   ),
 
-                
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
                       Row(
                         children: [
                           CircleAvatar(
                             radius: 20,
-                            backgroundColor: const Color(0xFF7BB88D).withValues(alpha: 0.2),
+                            backgroundColor: const Color(
+                              0xFF7BB88D,
+                            ).withValues(alpha: 0.2),
                             child: Text(
-                              post.userName.isNotEmpty ? post.userName[0].toUpperCase() : 'U',
+                              post.userName.isNotEmpty
+                                  ? post.userName[0].toUpperCase()
+                                  : 'U',
                               style: const TextStyle(
                                 color: Color(0xFF1B5E20),
                                 fontWeight: FontWeight.bold,
@@ -142,8 +141,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                          
-                          
+
                           _buildLikeButton(
                             isLiked: isLiked,
                             count: likeCount,
@@ -151,7 +149,9 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                               if (_currentUserId == null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text("Faça login para poder curtir posts! 🔒"),
+                                    content: Text(
+                                      "Faça login para poder curtir posts! 🔒",
+                                    ),
                                   ),
                                 );
                                 return;
@@ -164,7 +164,6 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
                       const SizedBox(height: 24),
 
-                      
                       Text(
                         post.title,
                         style: const TextStyle(
@@ -179,16 +178,17 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                       const Divider(),
                       const SizedBox(height: 16),
 
-                      
                       Text(
-                        post.description.isNotEmpty ? post.description : "Sem descrição.",
+                        post.description.isNotEmpty
+                            ? post.description
+                            : "Sem descrição.",
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.black87,
                           height: 1.6,
                         ),
                       ),
-                      
+
                       const SizedBox(height: 30),
                     ],
                   ),
@@ -208,10 +208,14 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: isLiked ? Colors.red.withValues(alpha: 0.08) : Colors.grey[500]!.withValues(alpha: 0.1),
+        color: isLiked
+            ? Colors.red.withValues(alpha: 0.08)
+            : Colors.grey[500]!.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: isLiked ? Colors.red.withValues(alpha: 0.3) : Colors.grey[300]!,
+          color: isLiked
+              ? Colors.red.withValues(alpha: 0.3)
+              : Colors.grey[300]!,
           width: 1,
         ),
       ),

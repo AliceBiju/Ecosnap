@@ -8,17 +8,11 @@ class _JSBlob {
   external factory _JSBlob(JSArray<JSAny?> parts, JSObject options);
 }
 
-
-
-
 dynamic createBlobForWeb(Uint8List bytes, String mimeType) {
-  
   final jsUint8Array = bytes.buffer.toJS;
 
-  
   final parts = <JSAny?>[jsUint8Array].toJS;
 
-  
   final options = JSObject();
   options.setProperty('type'.toJS, mimeType.toJS);
 

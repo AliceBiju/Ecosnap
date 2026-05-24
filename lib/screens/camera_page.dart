@@ -29,7 +29,6 @@ class _CameraPageState extends State<CameraPage> {
   final picker = ImagePicker();
   final HistoryService _historyService = HistoryService();
 
-  
   void escolherModo(bool camera) async {
     setState(() {
       _modoEscolhido = true;
@@ -48,7 +47,6 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  
   Future<void> pegarDaCameraWeb() async {
     final XFile? foto = await picker.pickImage(source: ImageSource.camera);
 
@@ -62,7 +60,6 @@ class _CameraPageState extends State<CameraPage> {
     await identificarPlanta();
   }
 
-  
   Future<void> iniciarCamera() async {
     try {
       cameras = await availableCameras();
@@ -84,7 +81,6 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  
   Future<void> tirarFoto() async {
     if (controller == null || !controller!.value.isInitialized) return;
 
@@ -94,13 +90,12 @@ class _CameraPageState extends State<CameraPage> {
       setState(() => _imageBytes = bytes);
       await identificarPlanta();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Erro ao capturar foto: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Erro ao capturar foto: $e")));
     }
   }
 
-  
   Future<void> pegarDaGaleria() async {
     final XFile? foto = await picker.pickImage(source: ImageSource.gallery);
 
@@ -114,10 +109,9 @@ class _CameraPageState extends State<CameraPage> {
     await identificarPlanta();
   }
 
-  
   Future<String?> _uploadImage(Uint8List imageBytes) async {
     const String apiKey = String.fromEnvironment(
-      'IMGBB_KEY', 
+      'IMGBB_KEY',
       defaultValue: 'CHAVE NÃO CONFIGURADA',
     );
 
@@ -128,7 +122,7 @@ class _CameraPageState extends State<CameraPage> {
 
     try {
       final uri = Uri.parse('https://api.imgbb.com/1/upload?key=$apiKey');
-      
+
       final request = http.MultipartRequest('POST', uri);
       request.files.add(
         http.MultipartFile.fromBytes(
@@ -149,7 +143,9 @@ class _CameraPageState extends State<CameraPage> {
           return url;
         }
       }
-      print("Erro no upload do ImgBB: ${response.statusCode} - ${response.body}");
+      print(
+        "Erro no upload do ImgBB: ${response.statusCode} - ${response.body}",
+      );
       return null;
     } catch (e) {
       print('Exceção ao fazer upload da imagem para ImgBB: $e');
@@ -157,12 +153,11 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  
   Future<void> identificarPlanta() async {
     if (_imageBytes == null) return;
 
     final apiKey = const String.fromEnvironment('PLANT_ID_KEY');
-    
+
     setState(() {
       _loading = true;
       _loadingMessage = "Analisando planta com IA...";
@@ -172,11 +167,10 @@ class _CameraPageState extends State<CameraPage> {
       final base64Image = base64Encode(_imageBytes!);
 
       final response = await http.post(
-        Uri.parse('https://plant.id/api/v3/identification?details=common_names,description_all,watering&language=pt'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Api-Key': apiKey,
-        },
+        Uri.parse(
+          'https://plant.id/api/v3/identification?details=common_names,description_all,watering&language=pt',
+        ),
+        headers: {'Content-Type': 'application/json', 'Api-Key': apiKey},
         body: jsonEncode({
           "images": [base64Image],
           "similar_images": true,
@@ -184,31 +178,37 @@ class _CameraPageState extends State<CameraPage> {
       );
 
       if (response.statusCode != 200 && response.statusCode != 201) {
-        throw Exception("Falha na API Plant.id: ${response.statusCode} - ${response.body}");
+        throw Exception(
+          "Falha na API Plant.id: ${response.statusCode} - ${response.body}",
+        );
       }
 
       final data = jsonDecode(response.body);
       final s = data['result']?['classification']?['suggestions']?[0];
 
       if (s == null) {
-        throw Exception("Nenhuma planta identificada pela Inteligência Artificial.");
+        throw Exception(
+          "Nenhuma planta identificada pela Inteligência Artificial.",
+        );
       }
 
-      
       final String scientificName = s['name'] ?? 'Espécie não identificada';
       final double confidence = (s['probability'] ?? 0) * 100;
-      
+
       String description = '';
       String watering = '';
       String commonName = '';
 
       final details = s['details'];
       if (details != null) {
-        description = details['description_all']?['value'] ?? details['description']?['value'] ?? "Nenhuma descrição adicional foi encontrada.";
-        
+        description =
+            details['description_all']?['value'] ??
+            details['description']?['value'] ??
+            "Nenhuma descrição adicional foi encontrada.";
+
         int? minWatering = details['watering']?['min'];
         int? maxWatering = details['watering']?['max'];
-        
+
         String nomeNivel(int val) {
           if (val == 1) return "Seco";
           if (val == 2) return "Moderado";
@@ -217,23 +217,22 @@ class _CameraPageState extends State<CameraPage> {
         }
 
         if (minWatering != null && maxWatering != null) {
-          watering = minWatering == maxWatering 
-              ? nomeNivel(minWatering) 
+          watering = minWatering == maxWatering
+              ? nomeNivel(minWatering)
               : "${nomeNivel(minWatering)} a ${nomeNivel(maxWatering)}";
         } else if (minWatering != null) {
           watering = nomeNivel(minWatering);
         }
-        
-        if (details['common_names'] != null && (details['common_names'] as List).isNotEmpty) {
+
+        if (details['common_names'] != null &&
+            (details['common_names'] as List).isNotEmpty) {
           commonName = details['common_names'][0];
         }
       }
 
-      
       setState(() => _loadingMessage = "Hospedando foto no servidor...");
       final uploadUrl = await _uploadImage(_imageBytes!);
 
-      
       setState(() => _loadingMessage = "Gravando histórico de plantas...");
       await _historyService.addScan(
         scientificName: scientificName,
@@ -244,7 +243,6 @@ class _CameraPageState extends State<CameraPage> {
         imageUrl: uploadUrl,
       );
 
-      
       final scanResult = PlantScan(
         id: '',
         scientificName: scientificName,
@@ -256,15 +254,10 @@ class _CameraPageState extends State<CameraPage> {
         imageUrl: uploadUrl,
       );
 
-      
       _resetar();
 
       if (mounted) {
-        Navigator.pushNamed(
-          context,
-          '/plant-details',
-          arguments: scanResult,
-        );
+        Navigator.pushNamed(context, '/plant-details', arguments: scanResult);
       }
     } catch (e) {
       if (mounted) {
@@ -297,7 +290,6 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    
     if (_loading) {
       return MainLayout(
         body: Container(
@@ -344,7 +336,6 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    
     if (!_modoEscolhido) {
       return MainLayout(
         body: Container(
@@ -355,7 +346,6 @@ class _CameraPageState extends State<CameraPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -381,11 +371,14 @@ class _CameraPageState extends State<CameraPage> {
                   const Text(
                     "Tire uma foto ou escolha um arquivo da sua galeria para identificar instantaneamente qualquer espécie.",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15, color: Colors.black54, height: 1.4),
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.black54,
+                      height: 1.4,
+                    ),
                   ),
                   const SizedBox(height: 40),
-                  
-                  
+
                   ElevatedButton.icon(
                     onPressed: () => escolherModo(true),
                     icon: const Icon(Icons.camera_alt),
@@ -401,15 +394,17 @@ class _CameraPageState extends State<CameraPage> {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  
-                  
+
                   OutlinedButton.icon(
                     onPressed: () => escolherModo(false),
                     icon: const Icon(Icons.photo_library),
                     label: const Text("Escolher da Galeria"),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFF1B5E20),
-                      side: const BorderSide(color: Color(0xFF7BB88D), width: 1.5),
+                      side: const BorderSide(
+                        color: Color(0xFF7BB88D),
+                        width: 1.5,
+                      ),
                       minimumSize: const Size(double.infinity, 52),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
@@ -424,7 +419,6 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    
     if (_usarCamera) {
       Widget cameraContent;
 
@@ -435,7 +429,9 @@ class _CameraPageState extends State<CameraPage> {
             style: TextStyle(fontSize: 16),
           ),
         );
-      } else if (_cameraDisponivel && controller != null && controller!.value.isInitialized) {
+      } else if (_cameraDisponivel &&
+          controller != null &&
+          controller!.value.isInitialized) {
         cameraContent = CameraPreview(controller!);
       } else {
         cameraContent = const Center(
@@ -450,7 +446,6 @@ class _CameraPageState extends State<CameraPage> {
             children: [
               Positioned.fill(child: cameraContent),
 
-              
               Positioned(
                 top: 20,
                 left: 20,
@@ -463,7 +458,6 @@ class _CameraPageState extends State<CameraPage> {
                 ),
               ),
 
-              
               Positioned(
                 bottom: 40,
                 left: 0,
@@ -477,7 +471,10 @@ class _CameraPageState extends State<CameraPage> {
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFF7BB88D), width: 4),
+                        border: Border.all(
+                          color: const Color(0xFF7BB88D),
+                          width: 4,
+                        ),
                         boxShadow: const [
                           BoxShadow(
                             color: Colors.black38,
@@ -503,9 +500,6 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

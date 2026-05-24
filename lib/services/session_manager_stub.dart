@@ -1,7 +1,3 @@
-
-
-
-
 void saveToLocalStorage(String key, String value) {
   throw UnsupportedError('localStorage is only available on web.');
 }

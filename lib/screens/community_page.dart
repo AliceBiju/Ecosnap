@@ -32,14 +32,23 @@ class _CommunityPageState extends State<CommunityPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: const Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 28),
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.redAccent,
+                size: 28,
+              ),
               SizedBox(width: 10),
               Text(
                 "Excluir Post?",
-                style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1B5E20),
+                ),
               ),
             ],
           ),
@@ -52,12 +61,15 @@ class _CommunityPageState extends State<CommunityPage> {
               onPressed: () => Navigator.pop(context),
               child: const Text(
                 "Cancelar",
-                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ElevatedButton(
               onPressed: () async {
-                Navigator.pop(context); 
+                Navigator.pop(context);
                 try {
                   await _postService.deletePost(postId);
                   if (mounted) {
@@ -80,9 +92,14 @@ class _CommunityPageState extends State<CommunityPage> {
                 backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              child: const Text("Excluir", style: TextStyle(fontWeight: FontWeight.bold)),
+              child: const Text(
+                "Excluir",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );
@@ -139,7 +156,7 @@ class _CommunityPageState extends State<CommunityPage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context); 
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, '/login');
                 },
                 style: ElevatedButton.styleFrom(
@@ -201,11 +218,7 @@ class _CommunityPageState extends State<CommunityPage> {
           backgroundColor: const Color(0xFF7BB88D),
           shape: const CircleBorder(),
           elevation: 4,
-          child: const Icon(
-            Icons.add,
-            size: 32,
-            color: Colors.white,
-          ),
+          child: const Icon(Icons.add, size: 32, color: Colors.white),
         ),
       ),
       body: StreamBuilder<List<Post>>(
@@ -263,11 +276,7 @@ class _PostCard extends StatelessWidget {
   final String? currentUserId;
   final VoidCallback? onDelete;
 
-  const _PostCard({
-    required this.post,
-    this.currentUserId,
-    this.onDelete,
-  });
+  const _PostCard({required this.post, this.currentUserId, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -290,18 +299,13 @@ class _PostCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: () {
-            Navigator.pushNamed(
-              context,
-              '/post-details',
-              arguments: post,
-            );
+            Navigator.pushNamed(context, '/post-details', arguments: post);
           },
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: SizedBox(
@@ -317,13 +321,11 @@ class _PostCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 16),
-                
-                
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -339,8 +341,7 @@ class _PostCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          
-                          
+
                           if (isOwner)
                             GestureDetector(
                               onTap: onDelete,
@@ -355,12 +356,13 @@ class _PostCard extends StatelessWidget {
                             ),
                         ],
                       ),
-                      
+
                       const SizedBox(height: 6),
-                      
-                      
+
                       Text(
-                        post.description.isEmpty ? 'Sem descrição.' : post.description,
+                        post.description.isEmpty
+                            ? 'Sem descrição.'
+                            : post.description,
                         style: const TextStyle(
                           color: Colors.black54,
                           fontSize: 13,
@@ -369,14 +371,12 @@ class _PostCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      
+
                       const SizedBox(height: 12),
-                      
-                      
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          
                           Expanded(
                             child: Row(
                               children: [
@@ -401,11 +401,14 @@ class _PostCard extends StatelessWidget {
                               ],
                             ),
                           ),
-                          
-                          
+
                           Row(
                             children: [
-                              const Icon(Icons.favorite, size: 14, color: Colors.red),
+                              const Icon(
+                                Icons.favorite,
+                                size: 14,
+                                color: Colors.red,
+                              ),
                               const SizedBox(width: 4),
                               Text(
                                 "${post.likedBy.length}",

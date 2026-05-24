@@ -6,16 +6,17 @@ class PlantDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final scan = ModalRoute.of(context)!.settings.arguments as PlantScan;
 
-    final displayName = scan.commonName.isNotEmpty ? scan.commonName : scan.scientificName;
+    final displayName = scan.commonName.isNotEmpty
+        ? scan.commonName
+        : scan.scientificName;
     final date = scan.scannedAt;
     final dateStr =
         '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} às ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F9F5), 
+      backgroundColor: const Color(0xFFF4F9F5),
       appBar: AppBar(
         backgroundColor: const Color(0xFF7BB88D),
         elevation: 0,
@@ -29,7 +30,6 @@ class PlantDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
@@ -58,7 +58,6 @@ class PlantDetailsPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  
                   Container(
                     width: 90,
                     height: 90,
@@ -74,11 +73,7 @@ class PlantDetailsPage extends StatelessWidget {
                           : null,
                     ),
                     child: scan.imageUrl == null
-                        ? const Icon(
-                            Icons.eco,
-                            size: 52,
-                            color: Colors.white,
-                          )
+                        ? const Icon(Icons.eco, size: 52, color: Colors.white)
                         : null,
                   ),
                   const SizedBox(height: 20),
@@ -99,7 +94,8 @@ class PlantDetailsPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  if (scan.commonName.isNotEmpty && scan.scientificName.isNotEmpty) ...[
+                  if (scan.commonName.isNotEmpty &&
+                      scan.scientificName.isNotEmpty) ...[
                     const SizedBox(height: 6),
                     Text(
                       scan.scientificName,
@@ -107,7 +103,7 @@ class PlantDetailsPage extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontStyle: FontStyle.italic,
-                        color: Color(0xFFE8E8E8), 
+                        color: Color(0xFFE8E8E8),
                       ),
                     ),
                   ],
@@ -117,12 +113,10 @@ class PlantDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  
                   Expanded(
                     child: _buildMetricCard(
                       icon: Icons.verified_user,
@@ -132,13 +126,15 @@ class PlantDetailsPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 14),
-                  
+
                   Expanded(
                     child: _buildMetricCard(
                       icon: Icons.water_drop,
                       iconColor: Colors.blueAccent,
                       title: "Rega",
-                      value: scan.watering.isNotEmpty ? scan.watering : "Moderada",
+                      value: scan.watering.isNotEmpty
+                          ? scan.watering
+                          : "Moderada",
                     ),
                   ),
                 ],
@@ -147,7 +143,6 @@ class PlantDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -201,10 +196,12 @@ class PlantDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            
             Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFF7BB88D).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(30),
@@ -212,7 +209,11 @@ class PlantDetailsPage extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.calendar_month, size: 16, color: Color(0xFF5A9B6F)),
+                    const Icon(
+                      Icons.calendar_month,
+                      size: 16,
+                      color: Color(0xFF5A9B6F),
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       "Escaneada em: $dateStr",

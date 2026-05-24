@@ -83,21 +83,17 @@ class AuthService {
     return await SessionManager.get() != null;
   }
 
-  
   Future<User?> getCurrentUser() async {
     final uid = await SessionManager.get();
     if (uid == null) return null;
     return await _repository.getUser(uid);
   }
 
-  
   Future<void> updateProfile(String name, String? password) async {
     final uid = await SessionManager.get();
     if (uid == null) return;
 
-    final Map<String, dynamic> dataToUpdate = {
-      'name': name,
-    };
+    final Map<String, dynamic> dataToUpdate = {'name': name};
 
     if (password != null && password.trim().isNotEmpty) {
       dataToUpdate['password'] = _hashPassword(password.trim());

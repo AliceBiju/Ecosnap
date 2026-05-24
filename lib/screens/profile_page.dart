@@ -14,7 +14,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final AuthService _authService = AuthService();
   final PostService _postService = PostService();
-  
+
   String? email;
   String? name;
   bool _isLoadingUser = true;
@@ -29,9 +29,9 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     carregar();
 
-    
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
         _carregarMaisPosts();
       }
     });
@@ -59,7 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _setupPostsFuture() async {
     if (_loadingMore) return;
 
-    
     final isFirst = _myPosts.isEmpty;
     if (isFirst) {
       setState(() {
@@ -70,7 +69,6 @@ class _ProfilePageState extends State<ProfilePage> {
     final stream = await _postService.getMyPosts(limit: _postsLimit);
     if (stream != null) {
       try {
-        
         final postsList = await stream.first;
         if (mounted) {
           setState(() {
@@ -95,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void _carregarMaisPosts() {
     if (_loadingMore) return;
     setState(() {
-      _postsLimit += 5; 
+      _postsLimit += 5;
     });
     _setupPostsFuture();
   }
@@ -105,14 +103,23 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: const Row(
             children: [
-              Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 28),
+              Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.redAccent,
+                size: 28,
+              ),
               SizedBox(width: 10),
               Text(
                 "Excluir Post?",
-                style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF1B5E20),
+                ),
               ),
             ],
           ),
@@ -125,12 +132,15 @@ class _ProfilePageState extends State<ProfilePage> {
               onPressed: () => Navigator.pop(context),
               child: const Text(
                 "Cancelar",
-                style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             ElevatedButton(
               onPressed: () async {
-                Navigator.pop(context); 
+                Navigator.pop(context);
                 try {
                   await _postService.deletePost(postId);
                   if (mounted) {
@@ -141,7 +151,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     );
                   }
-                  
+
                   _setupPostsFuture();
                 } catch (e) {
                   if (mounted) {
@@ -155,9 +165,14 @@ class _ProfilePageState extends State<ProfilePage> {
                 backgroundColor: Colors.redAccent,
                 foregroundColor: Colors.white,
                 elevation: 0,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-              child: const Text("Excluir", style: TextStyle(fontWeight: FontWeight.bold)),
+              child: const Text(
+                "Excluir",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
           ],
         );
@@ -205,7 +220,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF7BB88D).withValues(alpha: 0.15),
+                          color: const Color(
+                            0xFF7BB88D,
+                          ).withValues(alpha: 0.15),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
@@ -261,7 +278,6 @@ class _ProfilePageState extends State<ProfilePage> {
               controller: _scrollController,
               child: Column(
                 children: [
-                  
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 30),
@@ -302,19 +318,28 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   const SizedBox(height: 20),
 
-                  
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       children: [
-                        _card(Icons.edit, "Editar Perfil", onTap: () {
-                          Navigator.pushNamed(context, '/edit-profile').then((_) {
-                            carregar();
-                          });
-                        }),
-                        _card(Icons.history, "Histórico", onTap: () {
-                          Navigator.pushNamed(context, '/history');
-                        }),
+                        _card(
+                          Icons.edit,
+                          "Editar Perfil",
+                          onTap: () {
+                            Navigator.pushNamed(context, '/edit-profile').then((
+                              _,
+                            ) {
+                              carregar();
+                            });
+                          },
+                        ),
+                        _card(
+                          Icons.history,
+                          "Histórico",
+                          onTap: () {
+                            Navigator.pushNamed(context, '/history');
+                          },
+                        ),
                         _card(Icons.logout, "Sair", onTap: logout),
                       ],
                     ),
@@ -323,7 +348,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 15),
                   const Divider(),
 
-                  
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     child: Align(
@@ -343,7 +367,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 32),
                       child: Center(
-                        child: CircularProgressIndicator(color: Color(0xFF7BB88D)),
+                        child: CircularProgressIndicator(
+                          color: Color(0xFF7BB88D),
+                        ),
                       ),
                     )
                   else ...[
@@ -360,7 +386,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     else ...[
                       ListView.builder(
                         shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(), 
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: _myPosts.length,
                         itemBuilder: (context, index) {
                           final post = _myPosts[index];
@@ -370,8 +396,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           );
                         },
                       ),
-                      
-                      
+
                       if (_loadingMore)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
@@ -388,7 +413,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                     ],
                   ],
-                  
+
                   const SizedBox(height: 35),
                 ],
               ),
@@ -405,7 +430,11 @@ class _ProfilePageState extends State<ProfilePage> {
       child: ListTile(
         leading: Icon(icon, color: const Color(0xFF7BB88D)),
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+        trailing: const Icon(
+          Icons.arrow_forward_ios,
+          size: 14,
+          color: Colors.grey,
+        ),
         onTap: onTap,
       ),
     );
@@ -416,10 +445,7 @@ class _ProfilePostCard extends StatelessWidget {
   final Post post;
   final VoidCallback? onDelete;
 
-  const _ProfilePostCard({
-    required this.post,
-    this.onDelete,
-  });
+  const _ProfilePostCard({required this.post, this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -430,18 +456,13 @@ class _ProfilePostCard extends StatelessWidget {
       color: Colors.grey[100],
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/post-details',
-            arguments: post,
-          );
+          Navigator.pushNamed(context, '/post-details', arguments: post);
         },
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: SizedBox(
@@ -451,13 +472,16 @@ class _ProfilePostCard extends StatelessWidget {
                       ? Image.network(post.imageUrl!, fit: BoxFit.cover)
                       : Container(
                           color: Colors.grey[300],
-                          child: const Icon(Icons.local_florist, color: Colors.white, size: 28),
+                          child: const Icon(
+                            Icons.local_florist,
+                            color: Colors.white,
+                            size: 28,
+                          ),
                         ),
                 ),
               ),
               const SizedBox(width: 14),
 
-              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -492,8 +516,7 @@ class _ProfilePostCard extends StatelessWidget {
                   ],
                 ),
               ),
-              
-              
+
               if (onDelete != null)
                 GestureDetector(
                   onTap: onDelete,

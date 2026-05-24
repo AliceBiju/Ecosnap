@@ -9,8 +9,6 @@ class HistoryService {
     return await SessionManager.get();
   }
 
-  
-  
   Future<void> addScan({
     required String scientificName,
     required String commonName,
@@ -36,7 +34,6 @@ class HistoryService {
     await _repository.addScan(userId, scan);
   }
 
-  
   Future<Stream<List<PlantScan>>?> getHistory() async {
     final userId = await _getCurrentUserId();
     if (userId == null) return null;

@@ -11,19 +11,21 @@ class PostService {
   final UserRepository _userRepository = UserRepository();
 
   static const String _imgBbApiKey = String.fromEnvironment(
-    'IMGBB_KEY', 
+    'IMGBB_KEY',
     defaultValue: 'SUA_API_KEY_DO_IMGBB',
   );
 
   Future<String?> _uploadImage(Uint8List imageBytes) async {
     if (_imgBbApiKey == 'SUA_API_KEY_DO_IMGBB' || _imgBbApiKey.isEmpty) {
-      print('Erro: API Key do ImgBB não configurada. Por favor, crie uma grátis em https://api.imgbb.com/');
+      print(
+        'Erro: API Key do ImgBB não configurada. Por favor, crie uma grátis em https://api.imgbb.com/',
+      );
       return null;
     }
 
     try {
       final uri = Uri.parse('https://api.imgbb.com/1/upload?key=$_imgBbApiKey');
-      
+
       final request = http.MultipartRequest('POST', uri);
       request.files.add(
         http.MultipartFile.fromBytes(
@@ -39,11 +41,12 @@ class PostService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['success'] == true) {
-          
           return data['data']['url'] as String?;
         }
       }
-      print('Erro no upload para ImgBB: ${response.statusCode} - ${response.body}');
+      print(
+        'Erro no upload para ImgBB: ${response.statusCode} - ${response.body}',
+      );
       return null;
     } catch (e) {
       print('Exceção ao fazer upload para ImgBB: $e');
@@ -51,7 +54,6 @@ class PostService {
     }
   }
 
-  
   Future<(String, String)> _getCurrentUser() async {
     final userId = await SessionManager.get() ?? 'anonymous';
     if (userId == 'anonymous') return ('anonymous', 'Usuário');

@@ -4,21 +4,24 @@ class MainLayout extends StatelessWidget {
   final Widget body;
   final Widget? floatingActionButton;
   final bool showBackButton;
+  final String? appBarTitle;
 
   const MainLayout({
     super.key,
     required this.body,
     this.floatingActionButton,
     this.showBackButton = false,
+    this.appBarTitle,
   });
 
   @override
   Widget build(BuildContext context) {
-    
     final currentRoute = ModalRoute.of(context)?.settings.name ?? '';
-    int currentIndex = -1; 
+    int currentIndex = -1;
 
-    if (currentRoute == '/community' || currentRoute == '/post-details' || currentRoute == '/create-post') {
+    if (currentRoute == '/community' ||
+        currentRoute == '/post-details' ||
+        currentRoute == '/create-post') {
       currentIndex = 0;
     } else if (currentRoute == '/camera' || currentRoute == '/plant-details') {
       currentIndex = 1;
@@ -26,64 +29,130 @@ class MainLayout extends StatelessWidget {
       currentIndex = 2;
     }
 
+    final isHomePage =
+        currentRoute == '/home' || currentRoute == '/' || currentRoute == '';
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF7BB88D),
-        
-        automaticallyImplyLeading: showBackButton,
-        leading: showBackButton
+        automaticallyImplyLeading: (appBarTitle != null || isHomePage)
+            ? showBackButton
+            : false,
+        leading: appBarTitle != null
             ? IconButton(
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () => Navigator.pop(context),
               )
-            : null,
-        title: GestureDetector(
-          onTap: () {
-            Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-              (route) => false,
-            );
-          },
-          child: Row(
-            children: [
-              
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white,
-                    width: 1.5,
-                  ),
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    "assets/images/Logo.jpg",
-                    width: 38,
-                    height: 38,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              
-              const Text(
-                "EcoSnap",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 21,
+            : (isHomePage
+                  ? (showBackButton
+                        ? IconButton(
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => Navigator.pop(context),
+                          )
+                        : null)
+                  : IconButton(
+                      icon: const Icon(Icons.home, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home',
+                          (route) => false,
+                        );
+                      },
+                    )),
+        title: appBarTitle != null
+            ? Text(
+                appBarTitle!,
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 0.8,
+                  color: Colors.white,
                 ),
-              ),
-              const SizedBox(width: 4),
-              const Text(
-                "🌱",
-                style: TextStyle(fontSize: 18),
-              ),
-            ],
-          ),
-        ),
+              )
+            : (isHomePage
+                  ? GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home',
+                          (route) => false,
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 1.5,
+                              ),
+                            ),
+                            child: ClipOval(
+                              child: Image.asset(
+                                "assets/images/Logo.jpg",
+                                width: 38,
+                                height: 38,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            "EcoSnap",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Text("🌱", style: TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                    )
+                  : null),
+        actions: (appBarTitle != null || isHomePage)
+            ? null
+            : [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "EcoSnap",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.8,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      const Text("🌱", style: TextStyle(fontSize: 18)),
+                      const SizedBox(width: 12),
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            "assets/images/Logo.jpg",
+                            width: 38,
+                            height: 38,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
       ),
       body: body,
       floatingActionButton: floatingActionButton,
@@ -103,7 +172,6 @@ class MainLayout extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              
               _buildNavItem(
                 context: context,
                 icon: Icons.chat_bubble,
@@ -116,7 +184,6 @@ class MainLayout extends StatelessWidget {
                 },
               ),
 
-              
               GestureDetector(
                 onTap: () {
                   if (currentIndex != 1) {
@@ -130,11 +197,13 @@ class MainLayout extends StatelessWidget {
                       width: 52,
                       height: 52,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF25723E), 
+                        color: const Color(0xFF25723E),
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF25723E).withValues(alpha: 0.35),
+                            color: const Color(
+                              0xFF25723E,
+                            ).withValues(alpha: 0.35),
                             blurRadius: 8,
                             offset: const Offset(0, 3),
                           ),
@@ -151,15 +220,18 @@ class MainLayout extends StatelessWidget {
                       "Câmera",
                       style: TextStyle(
                         fontSize: 11,
-                        fontWeight: currentIndex == 1 ? FontWeight.bold : FontWeight.w500,
-                        color: currentIndex == 1 ? const Color(0xFF1B5E20) : Colors.grey[600],
+                        fontWeight: currentIndex == 1
+                            ? FontWeight.bold
+                            : FontWeight.w500,
+                        color: currentIndex == 1
+                            ? const Color(0xFF1B5E20)
+                            : Colors.grey[600],
                       ),
                     ),
                   ],
                 ),
               ),
 
-              
               _buildNavItem(
                 context: context,
                 icon: Icons.person,
