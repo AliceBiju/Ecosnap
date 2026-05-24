@@ -110,7 +110,7 @@ class MainLayout extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 4),
-                          const Text("🌱", style: TextStyle(fontSize: 18)),
+                          const Text("", style: TextStyle(fontSize: 18)),
                         ],
                       ),
                     )
@@ -133,7 +133,6 @@ class MainLayout extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Text("🌱", style: TextStyle(fontSize: 18)),
                       const SizedBox(width: 12),
                       Container(
                         decoration: BoxDecoration(
