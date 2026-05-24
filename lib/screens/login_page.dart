@@ -112,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 40),
 
-              /// LOGO
+              
               const CircleAvatar(
                 radius: 50,
                 backgroundImage: AssetImage("assets/images/Logo.jpg"),
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 30),
 
-              /// CARD BRANCO
+              
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 24),
 
-                    /// BOTÃO DE AÇÃO PRINCIPAL
+                    
                     ElevatedButton(
                       onPressed: _isLoginMode ? login : cadastrar,
                       style: ElevatedButton.styleFrom(
@@ -238,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     const SizedBox(height: 16),
 
-                    /// BOTÃO PARA ALTERNAR MODO
+                    
                     TextButton(
                       onPressed: () {
                         setState(() {

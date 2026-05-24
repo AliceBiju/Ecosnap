@@ -10,15 +10,11 @@ class PostService {
   final PostRepository _repository = PostRepository();
   final UserRepository _userRepository = UserRepository();
 
-  // Insira sua API Key gratuita do ImgBB aqui (crie uma grátis em https://api.imgbb.com/)
-  // Usamos uma chave pública padrão de fallback para facilitar seus testes imediatos.
   static const String _imgBbApiKey = String.fromEnvironment(
     'IMGBB_KEY', 
     defaultValue: 'SUA_API_KEY_DO_IMGBB',
   );
 
-  /// Faz upload da imagem para o ImgBB via POST HTTP Multipart e retorna a URL direta.
-  /// Funciona de forma idêntica e sem restrições de CORS na Web e Mobile.
   Future<String?> _uploadImage(Uint8List imageBytes) async {
     if (_imgBbApiKey == 'SUA_API_KEY_DO_IMGBB' || _imgBbApiKey.isEmpty) {
       print('Erro: API Key do ImgBB não configurada. Por favor, crie uma grátis em https://api.imgbb.com/');
@@ -43,7 +39,7 @@ class PostService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['success'] == true) {
-          // Retorna a URL direta da imagem hospedada
+          
           return data['data']['url'] as String?;
         }
       }
@@ -55,7 +51,7 @@ class PostService {
     }
   }
 
-  /// Obtém o userId e o nome do usuário logado.
+  
   Future<(String, String)> _getCurrentUser() async {
     final userId = await SessionManager.get() ?? 'anonymous';
     if (userId == 'anonymous') return ('anonymous', 'Usuário');
@@ -63,7 +59,6 @@ class PostService {
     return (userId, user?.name ?? user?.email ?? 'Usuário');
   }
 
-  /// Cria e salva um post no Firestore, fazendo upload da imagem se fornecida.
   Future<void> createPost({
     required String title,
     required String description,
@@ -71,7 +66,6 @@ class PostService {
   }) async {
     final (userId, userName) = await _getCurrentUser();
 
-    // Salva o post sem imagem primeiro para obter o ID gerado pelo Firestore
     final tempPost = Post(
       id: '',
       userId: userId,
@@ -84,7 +78,6 @@ class PostService {
 
     final postId = await _repository.savePost(tempPost);
 
-    // Se houver imagem, faz upload para o ImgBB e atualiza o documento com a URL
     if (imageBytes != null) {
       final imageUrl = await _uploadImage(imageBytes);
       if (imageUrl != null) {
@@ -93,31 +86,26 @@ class PostService {
     }
   }
 
-  /// Retorna stream com todos os posts em tempo real.
   Stream<List<Post>> getAllPosts() {
     return _repository.getAllPosts();
   }
 
-  /// Alterna a curtida (like/dislike) de um post pelo usuário logado.
   Future<void> toggleLike(String postId) async {
     final userId = await SessionManager.get();
     if (userId == null) return;
     await _repository.toggleLike(postId, userId);
   }
 
-  /// Retorna a stream de posts criados especificamente pelo usuário logado.
   Future<Stream<List<Post>>?> getMyPosts({int? limit}) async {
     final userId = await SessionManager.get();
     if (userId == null) return null;
     return _repository.getPostsByUserId(userId, limit: limit);
   }
 
-  /// Ouve atualizações em tempo real de um post específico pelo ID.
   Stream<Post?> getPostStream(String postId) {
     return _repository.getPostStream(postId);
   }
 
-  /// Deleta um post pelo ID.
   Future<void> deletePost(String postId) async {
     await _repository.deletePost(postId);
   }

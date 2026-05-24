@@ -114,7 +114,7 @@ class _ScanCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Foto do scan à esquerda
+              
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
                 child: SizedBox(
@@ -131,12 +131,12 @@ class _ScanCard extends StatelessWidget {
               ),
               const SizedBox(width: 14),
 
-              // Detalhes à direita
+              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Nome e confiança
+                    
                     Row(
                       children: [
                         Expanded(
@@ -170,7 +170,7 @@ class _ScanCard extends StatelessWidget {
                       ],
                     ),
 
-                    // Nome científico (se tiver nome comum diferente)
+                    
                     if (scan.commonName.isNotEmpty &&
                         scan.scientificName.isNotEmpty) ...[
                       const SizedBox(height: 2),
@@ -188,7 +188,7 @@ class _ScanCard extends StatelessWidget {
 
                     const SizedBox(height: 6),
 
-                    // Irrigação
+                    
                     if (scan.watering.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 4),
@@ -206,7 +206,7 @@ class _ScanCard extends StatelessWidget {
                         ),
                       ),
 
-                    // Descrição resumida
+                    
                     if (scan.description.isNotEmpty)
                       Text(
                         scan.description,
@@ -218,7 +218,7 @@ class _ScanCard extends StatelessWidget {
 
                     const SizedBox(height: 8),
 
-                    // Data
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

@@ -39,7 +39,7 @@ class HomePage extends StatelessWidget {
         children: [
             const SizedBox(height: 12),
 
-            // 🌿 BOAS-VINDAS & TÍTULO DO CARROSSEL
+            
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 24),
               child: Align(
@@ -57,7 +57,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
 
-            // 🌿 CARROSSEL IMAGENS ORIGINAIS (GARANTIDO OFFLINE E INSTANTÂNEO)
+            
             CarouselSlider(
               options: CarouselOptions(
                 height: 250,
@@ -77,7 +77,7 @@ class HomePage extends StatelessWidget {
                         width: double.infinity,
                       ),
                     ),
-                    // Gradiente escuro para legibilidade do texto
+                    
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
@@ -93,7 +93,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // Detalhes da planta
+                    
                     Positioned(
                       bottom: 16,
                       left: 16,
@@ -129,7 +129,7 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // 🌱 ICONES DE CATEGORIAS (MANTENDO A ESTRUTURA ANTIGA PREMIUM)
+            
             CarouselSlider(
               options: CarouselOptions(
                 height: 100,
@@ -176,7 +176,7 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 8),
 
-            // 📷 ESCANEAMENTO EM DESTAQUE (FOCO TOTAL NO ESCANEAMENTO)
+            
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               decoration: BoxDecoration(

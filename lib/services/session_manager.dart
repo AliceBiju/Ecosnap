@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'session_manager_web.dart' if (dart.library.io) 'session_manager_stub.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Gerencia a sessão do usuário de forma persistente.
-/// - Web: usa localStorage (persiste ao fechar o browser)
-/// - Mobile/Desktop: usa SharedPreferences
+
+
+
 class SessionManager {
   static const String _key = 'user_id';
 

@@ -27,7 +27,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Recupera o post inicial via argumentos da rota
+    
     final initialPost = ModalRoute.of(context)!.settings.arguments as Post;
 
     return Scaffold(
@@ -63,7 +63,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // --- HEADER: IMAGEM DO POST OU GRADIENTE SE NÃO HOUVER ---
+                
                 if (post.imageUrl != null)
                   Container(
                     width: double.infinity,
@@ -95,13 +95,13 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                     ),
                   ),
 
-                // --- CORPO DO POST ---
+                
                 Padding(
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Autor do Post, Data e CURTIR NO TOPO
+                      
                       Row(
                         children: [
                           CircleAvatar(
@@ -143,7 +143,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                           ),
                           const SizedBox(width: 8),
                           
-                          // --- BOTÃO DE CURTIR PREMIUM E COMPACTO NO TOPO ---
+                          
                           _buildLikeButton(
                             isLiked: isLiked,
                             count: likeCount,
@@ -164,7 +164,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
 
                       const SizedBox(height: 24),
 
-                      // Título do Post
+                      
                       Text(
                         post.title,
                         style: const TextStyle(
@@ -179,7 +179,7 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                       const Divider(),
                       const SizedBox(height: 16),
 
-                      // Conteúdo / Descrição do Post
+                      
                       Text(
                         post.description.isNotEmpty ? post.description : "Sem descrição.",
                         style: const TextStyle(

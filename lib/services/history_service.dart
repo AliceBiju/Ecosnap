@@ -9,8 +9,8 @@ class HistoryService {
     return await SessionManager.get();
   }
 
-  /// Adiciona um scan ao histórico do usuário logado.
-  /// Se não houver usuário logado, não faz nada.
+  
+  
   Future<void> addScan({
     required String scientificName,
     required String commonName,
@@ -36,7 +36,7 @@ class HistoryService {
     await _repository.addScan(userId, scan);
   }
 
-  /// Retorna o stream do histórico do usuário logado.
+  
   Future<Stream<List<PlantScan>>?> getHistory() async {
     final userId = await _getCurrentUserId();
     if (userId == null) return null;

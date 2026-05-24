@@ -125,7 +125,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // --- FOTO DA PLANTA ---
+            
             const Text(
               "Foto da Planta",
               style: TextStyle(
@@ -227,7 +227,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
             const SizedBox(height: 30),
 
-            // --- TÍTULO DO POST ---
+            
             TextField(
               controller: _nomeController,
               textCapitalization: TextCapitalization.sentences,
@@ -248,7 +248,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
             const SizedBox(height: 20),
 
-            // --- DESCRIÇÃO ---
+            
             TextField(
               controller: _descricaoController,
               maxLines: 5,
@@ -274,7 +274,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
             const SizedBox(height: 35),
 
-            // --- BOTÃO PUBLICAR ---
+            
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

@@ -76,7 +76,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           ),
         );
-        Navigator.pop(context); // Retorna atualizado
+        Navigator.pop(context); 
       }
     } catch (e) {
       if (mounted) {
@@ -121,7 +121,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     children: [
                       const SizedBox(height: 30),
 
-                      // CÍRCULO DO AVATAR COM O LOGOTIPO DO APLICATIVO
+                      
                       Center(
                         child: Container(
                           decoration: BoxDecoration(
@@ -156,7 +156,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 35),
 
-                      // INPUT NOME
+                      
                       TextFormField(
                         controller: _nameController,
                         textCapitalization: TextCapitalization.words,
@@ -183,7 +183,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 20),
 
-                      // INPUT EMAIL (BLOQUEADO)
+                      
                       TextFormField(
                         initialValue: _email,
                         readOnly: true,
@@ -201,7 +201,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 20),
 
-                      // INPUT SENHA
+                      
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
@@ -228,7 +228,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                       const SizedBox(height: 35),
 
-                      // BOTÃO SALVAR ALTERAÇÕES
+                      
                       ElevatedButton(
                         onPressed: _isSaving ? null : _salvar,
                         style: ElevatedButton.styleFrom(

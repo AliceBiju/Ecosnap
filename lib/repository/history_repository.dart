@@ -8,12 +8,12 @@ class HistoryRepository {
     return _db.collection('users').doc(userId).collection('history');
   }
 
-  /// Salva um scan no histórico do usuário.
+  
   Future<void> addScan(String userId, PlantScan scan) async {
     await _historyRef(userId).add(scan.toFirestore());
   }
 
-  /// Retorna o histórico do usuário, do mais recente ao mais antigo.
+  
   Stream<List<PlantScan>> getHistory(String userId) {
     return _historyRef(userId)
         .orderBy('scannedAt', descending: true)

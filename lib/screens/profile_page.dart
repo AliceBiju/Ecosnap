@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     carregar();
 
-    // Ouvinte para o scroll infinito
+    
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
         _carregarMaisPosts();
@@ -59,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _setupPostsFuture() async {
     if (_loadingMore) return;
 
-    // Se for o primeiro carregamento, mostra o indicador geral
+    
     final isFirst = _myPosts.isEmpty;
     if (isFirst) {
       setState(() {
@@ -70,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final stream = await _postService.getMyPosts(limit: _postsLimit);
     if (stream != null) {
       try {
-        // Pega a primeira emissão (Future) para evitar piscadas do StreamBuilder
+        
         final postsList = await stream.first;
         if (mounted) {
           setState(() {
@@ -95,7 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void _carregarMaisPosts() {
     if (_loadingMore) return;
     setState(() {
-      _postsLimit += 5; // Aumenta o limite sob demanda
+      _postsLimit += 5; 
     });
     _setupPostsFuture();
   }
@@ -130,7 +130,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                Navigator.pop(context); // Fecha diálogo
+                Navigator.pop(context); 
                 try {
                   await _postService.deletePost(postId);
                   if (mounted) {
@@ -141,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     );
                   }
-                  // Recarrega lista local
+                  
                   _setupPostsFuture();
                 } catch (e) {
                   if (mounted) {
@@ -261,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
               controller: _scrollController,
               child: Column(
                 children: [
-                  // TOPO VERDE
+                  
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 30),
@@ -302,7 +302,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                   const SizedBox(height: 20),
 
-                  // CARDS DE OPÇÕES
+                  
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
@@ -323,7 +323,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   const SizedBox(height: 15),
                   const Divider(),
 
-                  // 🌿 MEUS POSTS (SCROLL INFINITO)
+                  
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                     child: Align(
@@ -360,7 +360,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     else ...[
                       ListView.builder(
                         shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(), // Scroll principal cuida disso
+                        physics: const NeverScrollableScrollPhysics(), 
                         itemCount: _myPosts.length,
                         itemBuilder: (context, index) {
                           final post = _myPosts[index];
@@ -371,7 +371,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         },
                       ),
                       
-                      // Indicador de "Carregando mais" no final da lista
+                      
                       if (_loadingMore)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
@@ -441,7 +441,7 @@ class _ProfilePostCard extends StatelessWidget {
           padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              // Foto
+              
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: SizedBox(
@@ -457,7 +457,7 @@ class _ProfilePostCard extends StatelessWidget {
               ),
               const SizedBox(width: 14),
 
-              // Título e Likes
+              
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -493,7 +493,7 @@ class _ProfilePostCard extends StatelessWidget {
                 ),
               ),
               
-              // LIXEIRA DE DELEÇÃO PARA O DONO
+              
               if (onDelete != null)
                 GestureDetector(
                   onTap: onDelete,

@@ -57,7 +57,7 @@ class _CommunityPageState extends State<CommunityPage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                Navigator.pop(context); // Fecha diálogo
+                Navigator.pop(context); 
                 try {
                   await _postService.deletePost(postId);
                   if (mounted) {
@@ -139,7 +139,7 @@ class _CommunityPageState extends State<CommunityPage> {
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context); // Fecha o BottomSheet
+                  Navigator.pop(context); 
                   Navigator.pushNamed(context, '/login');
                 },
                 style: ElevatedButton.styleFrom(
@@ -301,7 +301,7 @@ class _PostCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // 📸 FOTO DO POST COM CANTOS ARREDONDADOS GENEROSOS
+                
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16),
                   child: SizedBox(
@@ -318,12 +318,12 @@ class _PostCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 16),
                 
-                // 📝 DETALHES DO CARD
+                
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Título do post e Lixeira
+                      
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -340,7 +340,7 @@ class _PostCard extends StatelessWidget {
                             ),
                           ),
                           
-                          // LIXEIRA DISCRETA APENAS PARA O DONO
+                          
                           if (isOwner)
                             GestureDetector(
                               onTap: onDelete,
@@ -358,7 +358,7 @@ class _PostCard extends StatelessWidget {
                       
                       const SizedBox(height: 6),
                       
-                      // Descrição
+                      
                       Text(
                         post.description.isEmpty ? 'Sem descrição.' : post.description,
                         style: const TextStyle(
@@ -372,11 +372,11 @@ class _PostCard extends StatelessWidget {
                       
                       const SizedBox(height: 12),
                       
-                      // LINHA INFERIOR (AUTOR & LIKES)
+                      
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Nome do Autor (Canto Inferior Esquerdo)
+                          
                           Expanded(
                             child: Row(
                               children: [
@@ -402,7 +402,7 @@ class _PostCard extends StatelessWidget {
                             ),
                           ),
                           
-                          // Curtidas (Canto Inferior Direito)
+                          
                           Row(
                             children: [
                               const Icon(Icons.favorite, size: 14, color: Colors.red),

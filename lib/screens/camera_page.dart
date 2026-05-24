@@ -29,7 +29,7 @@ class _CameraPageState extends State<CameraPage> {
   final picker = ImagePicker();
   final HistoryService _historyService = HistoryService();
 
-  // Escolhe entre tirar foto com a câmera ou pegar da galeria
+  
   void escolherModo(bool camera) async {
     setState(() {
       _modoEscolhido = true;
@@ -48,7 +48,7 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  // Captura usando câmera nativa do navegador (Flutter Web)
+  
   Future<void> pegarDaCameraWeb() async {
     final XFile? foto = await picker.pickImage(source: ImageSource.camera);
 
@@ -62,7 +62,7 @@ class _CameraPageState extends State<CameraPage> {
     await identificarPlanta();
   }
 
-  // Inicializa a câmera no dispositivo mobile
+  
   Future<void> iniciarCamera() async {
     try {
       cameras = await availableCameras();
@@ -84,7 +84,7 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  // Tira foto (Mobile)
+  
   Future<void> tirarFoto() async {
     if (controller == null || !controller!.value.isInitialized) return;
 
@@ -100,7 +100,7 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  // Seleciona uma imagem da galeria
+  
   Future<void> pegarDaGaleria() async {
     final XFile? foto = await picker.pickImage(source: ImageSource.gallery);
 
@@ -114,7 +114,7 @@ class _CameraPageState extends State<CameraPage> {
     await identificarPlanta();
   }
 
-  // Helper de Upload de Imagem para o ImgBB
+  
   Future<String?> _uploadImage(Uint8List imageBytes) async {
     const String apiKey = String.fromEnvironment(
       'IMGBB_KEY', 
@@ -157,7 +157,7 @@ class _CameraPageState extends State<CameraPage> {
     }
   }
 
-  // Faz a chamada na API do Plant.id, faz upload da imagem, salva no Firestore e redireciona
+  
   Future<void> identificarPlanta() async {
     if (_imageBytes == null) return;
 
@@ -194,7 +194,7 @@ class _CameraPageState extends State<CameraPage> {
         throw Exception("Nenhuma planta identificada pela Inteligência Artificial.");
       }
 
-      // Extrai dados para variáveis locais
+      
       final String scientificName = s['name'] ?? 'Espécie não identificada';
       final double confidence = (s['probability'] ?? 0) * 100;
       
@@ -229,11 +229,11 @@ class _CameraPageState extends State<CameraPage> {
         }
       }
 
-      // Passo 2: Hospedagem da imagem no ImgBB
+      
       setState(() => _loadingMessage = "Hospedando foto no servidor...");
       final uploadUrl = await _uploadImage(_imageBytes!);
 
-      // Passo 3: Registrar no histórico do usuário
+      
       setState(() => _loadingMessage = "Gravando histórico de plantas...");
       await _historyService.addScan(
         scientificName: scientificName,
@@ -244,7 +244,7 @@ class _CameraPageState extends State<CameraPage> {
         imageUrl: uploadUrl,
       );
 
-      // Instancia o objeto para rota
+      
       final scanResult = PlantScan(
         id: '',
         scientificName: scientificName,
@@ -256,7 +256,7 @@ class _CameraPageState extends State<CameraPage> {
         imageUrl: uploadUrl,
       );
 
-      // Limpa o estado da página antes de navegar
+      
       _resetar();
 
       if (mounted) {
@@ -297,7 +297,7 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 1️⃣ TELA DE CARREGAMENTO / ESCANEAMENTO ATIVO
+    
     if (_loading) {
       return MainLayout(
         body: Container(
@@ -344,7 +344,7 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    // 2️⃣ TELA DE SELEÇÃO INICIAL (CÂMERA / GALERIA)
+    
     if (!_modoEscolhido) {
       return MainLayout(
         body: Container(
@@ -355,7 +355,7 @@ class _CameraPageState extends State<CameraPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Ícone decorativo botânico
+                  
                   Container(
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
@@ -385,7 +385,7 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                   const SizedBox(height: 40),
                   
-                  // Botão de Câmera
+                  
                   ElevatedButton.icon(
                     onPressed: () => escolherModo(true),
                     icon: const Icon(Icons.camera_alt),
@@ -402,7 +402,7 @@ class _CameraPageState extends State<CameraPage> {
                   ),
                   const SizedBox(height: 14),
                   
-                  // Botão de Galeria
+                  
                   OutlinedButton.icon(
                     onPressed: () => escolherModo(false),
                     icon: const Icon(Icons.photo_library),
@@ -424,7 +424,7 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    // 3️⃣ TELA DO PREVIEW DA CÂMERA (MOBILE)
+    
     if (_usarCamera) {
       Widget cameraContent;
 
@@ -450,7 +450,7 @@ class _CameraPageState extends State<CameraPage> {
             children: [
               Positioned.fill(child: cameraContent),
 
-              // Botão de voltar superior
+              
               Positioned(
                 top: 20,
                 left: 20,
@@ -463,7 +463,7 @@ class _CameraPageState extends State<CameraPage> {
                 ),
               ),
 
-              // Botão redondo do Obturador (Disparador)
+              
               Positioned(
                 bottom: 40,
                 left: 0,
@@ -503,7 +503,7 @@ class _CameraPageState extends State<CameraPage> {
       );
     }
 
-    // Estado fallback genérico
+    
     return const Scaffold(
       body: Center(child: CircularProgressIndicator()),
     );

@@ -14,9 +14,9 @@ class MainLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Resolve o index do BottomNavigationBar com base na rota ativa
+    
     final currentRoute = ModalRoute.of(context)?.settings.name ?? '';
-    int currentIndex = -1; // Padrão neutro (evita travar navegação na homepage)
+    int currentIndex = -1; 
 
     if (currentRoute == '/community' || currentRoute == '/post-details' || currentRoute == '/create-post') {
       currentIndex = 0;
@@ -29,7 +29,7 @@ class MainLayout extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF7BB88D),
-        // Remove a seta de voltar automática no Scaffold principal se showBackButton for falso
+        
         automaticallyImplyLeading: showBackButton,
         leading: showBackButton
             ? IconButton(
@@ -47,7 +47,7 @@ class MainLayout extends StatelessWidget {
           },
           child: Row(
             children: [
-              // Logo clicável com borda branca suave
+              
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -66,7 +66,7 @@ class MainLayout extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 12),
-              // Nome do App estilizado
+              
               const Text(
                 "EcoSnap",
                 style: TextStyle(
@@ -103,7 +103,7 @@ class MainLayout extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // 💬 COMUNIDADE
+              
               _buildNavItem(
                 context: context,
                 icon: Icons.chat_bubble,
@@ -116,7 +116,7 @@ class MainLayout extends StatelessWidget {
                 },
               ),
 
-              // 📷 CÂMERA (COM O CÍRCULO VERDE NO BOTÃO CENTRAL!)
+              
               GestureDetector(
                 onTap: () {
                   if (currentIndex != 1) {
@@ -130,7 +130,7 @@ class MainLayout extends StatelessWidget {
                       width: 52,
                       height: 52,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF25723E), // Círculo verde marcante
+                        color: const Color(0xFF25723E), 
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -159,7 +159,7 @@ class MainLayout extends StatelessWidget {
                 ),
               ),
 
-              // 👤 PERFIL
+              
               _buildNavItem(
                 context: context,
                 icon: Icons.person,

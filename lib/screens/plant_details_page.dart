@@ -6,7 +6,7 @@ class PlantDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Recupera o objeto PlantScan passado via argumentos de rota
+    
     final scan = ModalRoute.of(context)!.settings.arguments as PlantScan;
 
     final displayName = scan.commonName.isNotEmpty ? scan.commonName : scan.scientificName;
@@ -15,7 +15,7 @@ class PlantDetailsPage extends StatelessWidget {
         '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year} às ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F9F5), // Fundo verde-claro bem suave
+      backgroundColor: const Color(0xFFF4F9F5), 
       appBar: AppBar(
         backgroundColor: const Color(0xFF7BB88D),
         elevation: 0,
@@ -29,7 +29,7 @@ class PlantDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🌿 CABEÇALHO HERO COM DEGRADÊ BOTÂNICO RUSTIC E PREMIUM
+            
             Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
@@ -58,7 +58,7 @@ class PlantDetailsPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  // Círculo com a foto real recortada ou ícone premium de planta
+                  
                   Container(
                     width: 90,
                     height: 90,
@@ -107,7 +107,7 @@ class PlantDetailsPage extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontStyle: FontStyle.italic,
-                        color: Color(0xFFE8E8E8), // Branco sutil
+                        color: Color(0xFFE8E8E8), 
                       ),
                     ),
                   ],
@@ -117,12 +117,12 @@ class PlantDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // 📊 CARDS DE MÉTRICAS RÁPIDAS
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  // Card de Confiança
+                  
                   Expanded(
                     child: _buildMetricCard(
                       icon: Icons.verified_user,
@@ -132,7 +132,7 @@ class PlantDetailsPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 14),
-                  // Card de Irrigação
+                  
                   Expanded(
                     child: _buildMetricCard(
                       icon: Icons.water_drop,
@@ -147,7 +147,7 @@ class PlantDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 24),
 
-            // 📝 CONTEÚDO PRINCIPAL (DESCRIÇÃO & INFORMAÇÕES)
+            
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
@@ -201,7 +201,7 @@ class PlantDetailsPage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // 📅 DATA DE ESCANEAMENTO
+            
             Center(
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
