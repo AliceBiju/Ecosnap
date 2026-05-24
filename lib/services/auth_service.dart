@@ -1,45 +1,104 @@
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:crypto/crypto.dart';
+import 'package:ecosnap/repository/user_repository.dart';
+import 'package:ecosnap/models/user.dart';
+import 'session_manager.dart';
 
 class AuthService {
-  static const String _key = "user";
+  final UserRepository _repository = UserRepository();
 
-  static Future<void> register(String email, String senha) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final user = {"email": email, "senha": senha};
-
-    await prefs.setString(_key, jsonEncode(user));
+  String _hashPassword(String password) {
+    final bytes = utf8.encode(password);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
-  static Future<bool> login(String email, String senha) async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString(_key);
-
-    if (data == null) return false;
-
-    final user = jsonDecode(data);
-
-    return user["email"] == email && user["senha"] == senha;
+  Future<bool> userExists(String email) async {
+    final user = await _repository.getUserByEmail(email);
+    return user != null;
   }
 
-  static Future<String?> getEmail() async {
-    final prefs = await SharedPreferences.getInstance();
-    final data = prefs.getString(_key);
+  Future<bool> register(User user) async {
+    if (await userExists(user.email)) return false;
 
-    if (data == null) return null;
+    final hashedPassword = _hashPassword(user.password);
+    final userToSave = User(
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      password: hashedPassword,
+      profilePictureURL: user.profilePictureURL,
+    );
 
-    final user = jsonDecode(data);
-    return user["email"];
+    await _repository.saveUser(userToSave);
+
+    final created = await _repository.getUserByEmail(user.email);
+    if (created != null) {
+      await SessionManager.save(created.id);
+      return true;
+    }
+
+    return false;
   }
 
-  static Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_key);
+  Future<bool> login(String email, String password) async {
+    final userInDb = await _repository.getUserByEmail(email);
+    if (userInDb != null) {
+      final hashedInput = _hashPassword(password);
+      if (userInDb.password == hashedInput || userInDb.password == password) {
+        await SessionManager.save(userInDb.id);
+        return true;
+      }
+    }
+    return false;
   }
 
-  static Future<bool> isLogged() async {
-    final email = await getEmail();
-    return email != null;
+  Future<String?> getCurrentUserId() async {
+    return await SessionManager.get();
+  }
+
+  Future<String?> getEmail() async {
+    final uid = await SessionManager.get();
+    if (uid != null) {
+      final user = await _repository.getUser(uid);
+      return user?.email;
+    }
+    return null;
+  }
+
+  Future<String?> getName() async {
+    final uid = await SessionManager.get();
+    if (uid != null) {
+      final user = await _repository.getUser(uid);
+      return user?.name;
+    }
+    return null;
+  }
+
+  Future<void> logout() async {
+    await SessionManager.clear();
+  }
+
+  Future<bool> isLogged() async {
+    return await SessionManager.get() != null;
+  }
+
+  Future<User?> getCurrentUser() async {
+    final uid = await SessionManager.get();
+    if (uid == null) return null;
+    return await _repository.getUser(uid);
+  }
+
+  Future<void> updateProfile(String name, String? password) async {
+    final uid = await SessionManager.get();
+    if (uid == null) return;
+
+    final Map<String, dynamic> dataToUpdate = {'name': name};
+
+    if (password != null && password.trim().isNotEmpty) {
+      dataToUpdate['password'] = _hashPassword(password.trim());
+    }
+
+    await _repository.updateUser(uid, dataToUpdate);
   }
 }

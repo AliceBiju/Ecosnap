@@ -1,24 +1,22 @@
-import 'package:ecosnap/domain/user.dart';
+import 'package:ecosnap/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> saveUser(User user) async {
-    try{
-
+    try {
       final docRef = user.id.isEmpty
-        ? _db.collection('users').doc()
-        : _db.collection('users').doc(user.id);
+          ? _db.collection('users').doc()
+          : _db.collection('users').doc(user.id);
 
       final data = user.toFirestore();
-      if(user.id.isEmpty){
+      if (user.id.isEmpty) {
         data['id'] = docRef.id;
       }
 
       await docRef.set(data);
-      
-    }catch(e){
+    } catch (e) {
       throw Exception("Erro ao salvar usuario: $e");
     }
   }
@@ -31,23 +29,22 @@ class UserRepository {
 
   Future<User?> getUserByEmail(String email) async {
     final query = await _db
-    .collection('users')
-    .where('email',isEqualTo: email)
-    .limit(1)
-    .get();
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .limit(1)
+        .get();
 
-    if (query.docs.isNotEmpty){
+    if (query.docs.isNotEmpty) {
       return User.fromFirestore(query.docs.first);
     }
     return null;
   }
 
-  Future<void> updateUser(String uid, Map<String,dynamic> data) async {
+  Future<void> updateUser(String uid, Map<String, dynamic> data) async {
     await _db.collection('users').doc(uid).update(data);
   }
 
-  Future <void> deleteUser(String uid) async{
-  await _db.collection('users').doc(uid).delete();
+  Future<void> deleteUser(String uid) async {
+    await _db.collection('users').doc(uid).delete();
   }
 }
-

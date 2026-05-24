@@ -31,19 +31,11 @@ O EcoSnap tem como objetivo facilitar o reconhecimento de plantas e promover o c
 ## Tecnologias Utilizadas
 
 - **Flutter** (Desenvolvimento mobile)  
-- **Dart** (Linguagem de programação)  
+- **Dart** (Linguagem de programação)
+- **Firebase** (Armazenamento de dados)  
 - **Plant.id API** (Reconhecimento de plantas por imagem)  
+- **Imgbb API** (Armazenamento de imagens)
 - **Git & GitHub** (Controle de versão)  
-
----
-
-## Tecnologias Futuras
-
-- **Firebase Authentication** (Autenticação de usuários)  
-- **Cloud Firestore** (Banco de dados em tempo real)  
-- **Firebase Storage** (Armazenamento de imagens)  
-- **Firebase Hosting / Functions** (Expansão de backend)  
-
 
 ---
 
@@ -54,7 +46,11 @@ O EcoSnap tem como objetivo facilitar o reconhecimento de plantas e promover o c
 - Flutter instalado  
 - Dart configurado  
 - Emulador Android/iOS ou dispositivo físico  
-- Chave de API da Plant.id  
+- Chave de API da Plant.id
+- Chave de API do Imgbb  
+
+---
+
 
 ### Passo a passo
 
@@ -68,38 +64,80 @@ cd Ecosnap
 # Instale as dependências
 flutter pub get
 
-#
-
 # Execute o aplicativo
 flutter run --dart-define-from-file=.env
 
-# Para web-only
+# Executar web-only
 flutter run --dart-define-from-file=.env -d web-server
-```
 
+# Criar APK para android
+flutter build apk --dart-define-from-file=.env --release
+```
 
 ---
 
-## Configuração da API
+## Configuração do Firebase
+
+Este projeto utiliza o Firestore para banco de dados.
+
+Para conectar seu próprio Firebase ao aplicativo, siga o passo a passo abaixo:
+
+### 1. Criar um projeto no Firebase
+1. Acesse o [Console do Firebase](https://console.firebase.google.com/).
+2. Clique em **Adicionar projeto** e siga as instruções para criar um novo projeto.
+3. No painel do projeto, ative o serviço:
+   - **Cloud Firestore** (crie o banco de dados e defina as regras de segurança apropriadas).
+
+### 2. Configurar o FlutterFire CLI
+A forma mais rápida de gerar as configurações do Firebase no projeto é utilizando a ferramenta oficial **FlutterFire CLI**:
+
+1. Certifique-se de ter o Node.js instalado em sua máquina.
+2. Instale o Firebase CLI globalmente:
+   ```bash
+   npm install -g firebase-tools
+   ```
+3. Realize o login na sua conta do Firebase:
+   ```bash
+   firebase login
+   ```
+4. Ative o CLI do FlutterFire globalmente:
+   ```bash
+   dart pub global activate flutterfire_cli
+   ```
+5. Na raiz do projeto EcoSnap, execute o comando de configuração:
+   ```bash
+   flutterfire configure
+   ```
+6. Selecione o projeto criado no passo 1 e marque as plataformas desejadas. O CLI gerará automaticamente o arquivo `lib/firebase_options.dart` e baixará o `google-services.json` para o local correto.
+
+---
+
+
+## Configuração da Plant.ID API
 
 Para utilizar a identificação de plantas, é necessário obter uma chave da API Plant.id:
 
 - Acesse: https://web.plant.id/
 - Crie uma conta
 - Gere sua chave de API
-- Configure a chave no projeto (arquivo de configuração ou variável de ambiente)
+- Configure a chave no projeto (.env)
+
+## Configuração do IMGBB API
+
+Para utilizar o envio de imagens, é preciso utilizar um hospedeiro de imagens:
+
+- Acesse https://imgbb.com
+- Crie uma conta
+- Gere sua chave de API
+- Configure a chave no Projeto (.env)
 
 
 ---
 
 ## Melhorias Futuras
-- Aumento da precisão na identificação de plantas
-- Sistema de curtidas e comentários nas postagens
+- Sistema de comentários nas postagens
 - Notificações em tempo real
 - Integração com localização geográfica das plantas
-- Histórico e estatísticas de identificações
-- Contribuição
-
 
 ---
 
@@ -112,8 +150,6 @@ Este projeto está sob a licença MIT.
 
 ##🌿 Sobre o EcoSnap 🌿
 
-O EcoSnap é um projeto de Dispositivos Móveis de alunos do IFSP - Campus Jacaré que une tecnologia e natureza, permitindo que usuários identifiquem plantas e compartilhem conhecimento em uma comunidade colaborativa. A proposta é tornar o aprendizado sobre o meio ambiente mais acessível, interativo e integrado ao cotidiano.
+O EcoSnap é um projeto de Dispositivos Móveis de alunos do IFSP - Campus Jacaréi que une tecnologia e natureza, permitindo que usuários identifiquem plantas e compartilhem conhecimento em uma comunidade colaborativa. A proposta é tornar o aprendizado sobre o meio ambiente mais acessível, interativo e integrado ao cotidiano.
 
 💚 Conectando pessoas à natureza através da tecnologia.
-
-[Canva](https://canva.link/b96q0fu1hno1x35)
