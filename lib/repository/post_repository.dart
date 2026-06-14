@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ecosnap/models/post.dart';
+import 'package:ecosnap/models/comment.dart';
 
 class PostRepository {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -75,5 +76,25 @@ class PostRepository {
 
   Future<void> deletePost(String postId) async {
     await _db.collection(_collection).doc(postId).delete();
+  }
+
+  Future<void> saveComment(String postId, Comment comment) async {
+    await _db
+        .collection(_collection)
+        .doc(postId)
+        .collection('comments')
+        .add(comment.toFirestore());
+  }
+
+  Stream<List<Comment>> getComments(String postId) {
+    return _db
+        .collection(_collection)
+        .doc(postId)
+        .collection('comments')
+        .orderBy('createdAt', descending: false)
+        .snapshots()
+        .map(
+          (snap) => snap.docs.map((doc) => Comment.fromFirestore(doc)).toList(),
+        );
   }
 }

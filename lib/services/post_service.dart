@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:ecosnap/models/post.dart';
+import 'package:ecosnap/models/comment.dart';
 import 'package:ecosnap/repository/post_repository.dart';
 import 'package:ecosnap/repository/user_repository.dart';
 import 'session_manager.dart';
@@ -110,5 +111,21 @@ class PostService {
 
   Future<void> deletePost(String postId) async {
     await _repository.deletePost(postId);
+  }
+
+  Stream<List<Comment>> getComments(String postId) {
+    return _repository.getComments(postId);
+  }
+
+  Future<void> addComment(String postId, String content) async {
+    final (userId, userName) = await _getCurrentUser();
+    final newComment = Comment(
+      id: '',
+      userId: userId,
+      userName: userName,
+      content: content,
+      createdAt: DateTime.now(),
+    );
+    await _repository.saveComment(postId, newComment);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/post.dart';
+import '../models/comment.dart';
 import '../services/post_service.dart';
 import '../services/session_manager.dart';
 
@@ -12,12 +13,20 @@ class PostDetailsPage extends StatefulWidget {
 
 class _PostDetailsPageState extends State<PostDetailsPage> {
   final PostService _postService = PostService();
+  final TextEditingController _commentController = TextEditingController();
   String? _currentUserId;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
     super.initState();
     _loadUser();
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
   }
 
   void _loadUser() async {
@@ -189,6 +198,199 @@ class _PostDetailsPageState extends State<PostDetailsPage> {
                         ),
                       ),
 
+                      const SizedBox(height: 30),
+                      const Divider(),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Comentários",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF1B5E20),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      StreamBuilder<List<Comment>>(
+                        stream: _postService.getComments(post.id),
+                        builder: (context, commentSnapshot) {
+                          if (commentSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          final comments = commentSnapshot.data ?? [];
+                          if (comments.isEmpty) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: Center(
+                                child: Text(
+                                  "Nenhum comentário ainda. Seja o primeiro! 🌱",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ),
+                            );
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: comments.length,
+                            itemBuilder: (context, index) {
+                              final comment = comments[index];
+                              final cDate = comment.createdAt;
+                              final cDateStr =
+                                  '${cDate.day.toString().padLeft(2, '0')}/${cDate.month.toString().padLeft(2, '0')}/${cDate.year} às ${cDate.hour.toString().padLeft(2, '0')}:${cDate.minute.toString().padLeft(2, '0')}';
+                              return Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[50],
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.grey[200]!),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 14,
+                                          backgroundColor: const Color(
+                                            0xFF7BB88D,
+                                          ).withValues(alpha: 0.2),
+                                          child: Text(
+                                            comment.userName.isNotEmpty
+                                                ? comment.userName[0]
+                                                      .toUpperCase()
+                                                : 'U',
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color: Color(0xFF1B5E20),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            comment.userName,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          cDateStr,
+                                          style: const TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      comment.content,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      if (_currentUserId == null)
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFF8E1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: const Color(0xFFFFE082)),
+                          ),
+                          child: const Row(
+                            children: [
+                              Icon(Icons.lock_outline, color: Colors.amber),
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  "Faça login para poder comentar nesta publicação! 🔒",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      else
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: _commentController,
+                                decoration: InputDecoration(
+                                  hintText: "Escreva um comentário...",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: Color(0xFF7BB88D),
+                                      width: 2,
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            _isSubmitting
+                                ? const CircularProgressIndicator()
+                                : IconButton(
+                                    icon: const Icon(
+                                      Icons.send,
+                                      color: Color(0xFF1B5E20),
+                                    ),
+                                    onPressed: () async {
+                                      final messenger = ScaffoldMessenger.of(
+                                        context,
+                                      );
+                                      final text = _commentController.text
+                                          .trim();
+                                      if (text.isEmpty) return;
+                                      setState(() => _isSubmitting = true);
+                                      try {
+                                        await _postService.addComment(
+                                          post.id,
+                                          text,
+                                        );
+                                        _commentController.clear();
+                                      } catch (e) {
+                                        messenger.showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              "Erro ao comentar: $e",
+                                            ),
+                                          ),
+                                        );
+                                      } finally {
+                                        setState(() => _isSubmitting = false);
+                                      }
+                                    },
+                                  ),
+                          ],
+                        ),
                       const SizedBox(height: 30),
                     ],
                   ),

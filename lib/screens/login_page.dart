@@ -1,6 +1,7 @@
 import 'package:ecosnap/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:ecosnap/services/auth_service.dart';
+import '../layout/main_layout.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -109,52 +110,79 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF7BB88D),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
+    return MainLayout(
+      body: Container(
+        color: const Color(0xFF7BB88D),
+        width: double.infinity,
+        height: double.infinity,
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
 
-              const CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage("assets/images/Logo.jpg"),
-              ),
-
-              const SizedBox(height: 20),
-
-              Text(
-                _isLoginMode ? "Bem-vindo 🌱" : "Criar Conta 🌿",
-                style: const TextStyle(
-                  fontSize: 26,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+                const CircleAvatar(
+                  radius: 50,
+                  backgroundImage: AssetImage("assets/images/Logo.jpg"),
                 ),
-              ),
 
-              const SizedBox(height: 30),
+                const SizedBox(height: 20),
 
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(30)),
+                Text(
+                  _isLoginMode ? "Bem-vindo 🌱" : "Criar Conta 🌿",
+                  style: const TextStyle(
+                    fontSize: 26,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
 
-                    if (!_isLoginMode) ...[
+                const SizedBox(height: 30),
+
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+
+                      if (!_isLoginMode) ...[
+                        TextField(
+                          controller: nomeController,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: InputDecoration(
+                            labelText: "Nome Completo",
+                            prefixIcon: const Icon(
+                              Icons.person_outline,
+                              color: Color(0xFF7BB88D),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF7BB88D),
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+
                       TextField(
-                        controller: nomeController,
-                        textCapitalization: TextCapitalization.words,
+                        controller: emailController,
+                        keyboardType: TextInputType.emailAddress,
                         decoration: InputDecoration(
-                          labelText: "Nome Completo",
+                          labelText: "Email",
                           prefixIcon: const Icon(
-                            Icons.person_outline,
+                            Icons.email_outlined,
                             color: Color(0xFF7BB88D),
                           ),
                           border: OutlineInputBorder(
@@ -169,64 +197,16 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+
                       const SizedBox(height: 16),
-                    ],
 
-                    TextField(
-                      controller: emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        prefixIcon: const Icon(
-                          Icons.email_outlined,
-                          color: Color(0xFF7BB88D),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF7BB88D),
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    TextField(
-                      controller: senhaController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        labelText: "Senha",
-                        prefixIcon: const Icon(
-                          Icons.lock_outline,
-                          color: Color(0xFF7BB88D),
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          borderSide: const BorderSide(
-                            color: Color(0xFF7BB88D),
-                            width: 2,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                    if (!_isLoginMode) ...[
-                      const SizedBox(height: 16),
                       TextField(
-                        controller: confirmarSenhaController,
+                        controller: senhaController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          labelText: "Confirmar Senha",
+                          labelText: "Senha",
                           prefixIcon: const Icon(
-                            Icons.lock_reset_outlined,
+                            Icons.lock_outline,
                             color: Color(0xFF7BB88D),
                           ),
                           border: OutlineInputBorder(
@@ -241,54 +221,79 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+
+                      if (!_isLoginMode) ...[
+                        const SizedBox(height: 16),
+                        TextField(
+                          controller: confirmarSenhaController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: "Confirmar Senha",
+                            prefixIcon: const Icon(
+                              Icons.lock_reset_outlined,
+                              color: Color(0xFF7BB88D),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                color: Color(0xFF7BB88D),
+                                width: 2,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+
+                      const SizedBox(height: 24),
+
+                      ElevatedButton(
+                        onPressed: _isLoginMode ? login : cadastrar,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF1B5E20),
+                          foregroundColor: Colors.white,
+                          minimumSize: const Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 2,
+                        ),
+                        child: Text(
+                          _isLoginMode ? "Entrar" : "Cadastrar",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _isLoginMode = !_isLoginMode;
+                          });
+                        },
+                        child: Text(
+                          _isLoginMode
+                              ? "Não tem uma conta? Cadastre-se"
+                              : "Já tem uma conta? Faça Login",
+                          style: const TextStyle(
+                            color: Color(0xFF1B5E20),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
                     ],
-
-                    const SizedBox(height: 24),
-
-                    ElevatedButton(
-                      onPressed: _isLoginMode ? login : cadastrar,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1B5E20),
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(double.infinity, 50),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: Text(
-                        _isLoginMode ? "Entrar" : "Cadastrar",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    TextButton(
-                      onPressed: () {
-                        setState(() {
-                          _isLoginMode = !_isLoginMode;
-                        });
-                      },
-                      child: Text(
-                        _isLoginMode
-                            ? "Não tem uma conta? Cadastre-se"
-                            : "Já tem uma conta? Faça Login",
-                        style: const TextStyle(
-                          color: Color(0xFF1B5E20),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-            ],
+                const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ),
